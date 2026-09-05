@@ -45,8 +45,6 @@ void get_monkey_id_hook();
 extern mkb::SubMode sub_mode;
 void fix_rain_ripple();
 
-void segmented_beaten_bar(mkb::SpriteDrawRequest* req);
-
 void texscroll_hook_asm(mkb::StagedefTextureScroll*);
 }
 

@@ -1,6 +1,6 @@
 #include "things.h"
 
-#include "custompack/model_utils.h"
+#include "custompack/models.h"
 #include "custompack/stageconf.h"
 #include "math_utils.h"
 #include "mem.h"
@@ -152,7 +152,7 @@ void collide_things() {
 
 namespace custompack::things {
 
-void on_after_load_stagedef() {
+void stage_init() {
     // This really only needs to run after common gma/tpl are loaded aka heaps reset
     s_thing_model = custompack::models::find("THING");
 }

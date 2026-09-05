@@ -1,4 +1,4 @@
-#include "custompack/model_utils.h"
+#include "custompack/models.h"
 
 #include "logging.h"
 #include "patch.h"

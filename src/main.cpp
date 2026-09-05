@@ -68,7 +68,7 @@ void on_did_load_stagedef_hook(u32 stage_id) {
 
     if (stage_id != 0) {
         mem::stage_arena.reset();
-        custompack::on_after_load_stagedef();
+        custompack::stage_init();
 
         // Allocate gameplay arena from remaining space in stage arena (after stageconf)
         u32 size = 0;

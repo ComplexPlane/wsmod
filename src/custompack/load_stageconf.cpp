@@ -8,7 +8,7 @@
 #include "logging.h"
 #include "mkb/mkb.h"
 
-namespace load_stageconf {
+namespace custompack::stageconf {
 
 namespace {
 
@@ -119,8 +119,8 @@ void load_stageconf() {
 
 }  // namespace
 
-void on_after_load_stagedef() {
+void stage_init() {
     load_stageconf();
 }
 
-}  // namespace load_stageconf
+}  // namespace custompack::stageconf

@@ -1,7 +1,7 @@
 #include "gameheaps.h"
 
+#include "custompack/custompack.h"
 #include "logging.h"
-#include "custompack/model_utils.h"
 #include "patch.h"
 
 namespace gameheaps {
@@ -35,7 +35,7 @@ void create_merged_game_heaps(int heap_config_idx) {
     mkb::replay_heap = mkb::main_heap;
     mkb::replay_heap_size = mkb::main_heap_size;
 
-    custompack::models::load_custompack_common_gma();
+    custompack::gameheap_init();
 }
 
 void destroy_merged_game_heaps() {

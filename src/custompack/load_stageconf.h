@@ -1,9 +1,9 @@
 #pragma once
 
-namespace load_stageconf {
+namespace custompack::stageconf {
 
 // Load stageconf. Called after stagedef loads but before GMA/TPL are loaded so we have game heap
 // space for parsing
-void on_after_load_stagedef();
+void stage_init();
 
-}  // namespace load_stageconf
+}  // namespace custompack::stageconf

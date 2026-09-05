@@ -4,7 +4,7 @@
 #include "assembly.h"
 #include "custompack/custompack.h"
 #include "custompack/load_stageconf.h"
-#include "custompack/model_utils.h"
+#include "custompack/models.h"
 #include "gameheaps.h"
 #include "math_utils.h"
 #include "mkb/mkb.h"
@@ -195,9 +195,9 @@ Tickable patches[] = {
 
     {
         .name = "custompack",
-        .main_loop_init_func = custompack::init_main_loop,
-        .main_game_init_func = custompack::init_main_game,
-        .tick_func = custompack::tick,
+        .main_loop_init_func = custompack::mainloop_init,
+        .main_game_init_func = custompack::maingame_init,
+        .tick_func = custompack::mainloop_tick,
     },
 
     {
@@ -221,6 +221,7 @@ Tickable modules[] = {
     },
     {
         .name = "custompack",
+        .disp_func = custompack::draw_2d,
         .draw_stage_func = custompack::draw_stage,
         .draw_view_stage_func = custompack::draw_view_stage,
         .stobj_init_func = custompack::stobj_init,

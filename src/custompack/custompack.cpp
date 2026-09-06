@@ -1,5 +1,6 @@
 #include "custompack.h"
-#include "custompack/models.h"
+#include "custompack/assets.h"
+#include "custompack/hud.h"
 #include "custompack/things.h"
 #include "load_stageconf.h"
 
@@ -40,10 +41,14 @@ void stage_init() {
 }
 
 void gameheap_init() {
-    models::load_custompack_common_gma();
+    assets::gameheap_init();
 }
 
 void draw_2d() {
+}
+
+void draw_sprites() {
+    hud::draw_sprites();
 }
 
 }  // namespace custompack

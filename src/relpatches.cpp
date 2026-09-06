@@ -2,9 +2,9 @@
 #include <cstdio>
 #include <cstring>
 #include "assembly.h"
+#include "custompack/assets.h"
 #include "custompack/custompack.h"
 #include "custompack/load_stageconf.h"
-#include "custompack/models.h"
 #include "gameheaps.h"
 #include "math_utils.h"
 #include "mkb/mkb.h"
@@ -221,7 +221,6 @@ Tickable modules[] = {
     },
     {
         .name = "custompack",
-        .disp_func = custompack::draw_2d,
         .draw_stage_func = custompack::draw_stage,
         .draw_view_stage_func = custompack::draw_view_stage,
         .stobj_init_func = custompack::stobj_init,

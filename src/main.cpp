@@ -136,6 +136,11 @@ TRAMP(s_preanim_tramp, mkb::g_advance_stage_animation, [] {
     s_preanim_tramp.chain();
 });
 
+TRAMP(s_draw_sprites_tramp, mkb::g_smth_with_drawing_all_sprites, [](int param1) {
+    custompack::draw_sprites();
+    s_draw_sprites_tramp.chain(param1);
+});
+
 void hook_c_patches() {
     HOOK_TRAMP(s_draw_debugtext_tramp);
     HOOK_TRAMP(s_process_inputs_tramp);
@@ -144,6 +149,7 @@ void hook_c_patches() {
     HOOK_TRAMP(s_stobj_init_tramp);
     HOOK_TRAMP(s_stobj_dest_tramp);
     HOOK_TRAMP(s_preanim_tramp);
+    HOOK_TRAMP(s_draw_sprites_tramp);
 
     patch::write_branch_bl(relutil::relocate_addr(0x80317d94),
                            reinterpret_cast<void*>(stobj_tick_hook));

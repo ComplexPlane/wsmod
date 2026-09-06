@@ -1,6 +1,6 @@
 #include "things.h"
 
-#include "custompack/models.h"
+#include "custompack/assets.h"
 #include "custompack/stageconf.h"
 #include "math_utils.h"
 #include "mem.h"
@@ -154,7 +154,7 @@ namespace custompack::things {
 
 void stage_init() {
     // This really only needs to run after common gma/tpl are loaded aka heaps reset
-    s_thing_model = custompack::models::find("THING");
+    s_thing_model = assets::get_model("ARROW_CPU_LOW");
 }
 
 void tick() {

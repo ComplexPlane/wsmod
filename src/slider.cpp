@@ -8,7 +8,7 @@ namespace slider {
 
 namespace {
 
-constexpr bool SHOW_SLIDERS = false;
+constexpr bool SHOW_SLIDERS = true;
 
 struct Slider {
     const char* name;
@@ -67,7 +67,7 @@ void disp() {
     if (SHOW_SLIDERS) {
         for (u32 i = 0; i < s_sliders.count(); i++) {
             Slider* slider = &s_sliders[i];
-            const char* prefix = i == s_selected_slider ? "\x1c" : "  ";
+            const char* prefix = i == s_selected_slider ? "->" : "  ";
             draw::debug_text(400, 10 + i * 15, draw::GREEN, "%s %s = %.2f", prefix, slider->name,
                              slider->value);
         }

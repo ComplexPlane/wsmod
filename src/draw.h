@@ -21,9 +21,9 @@ inline constexpr mkb::GXColor GREEN = {0x00, 0xff, 0x00, 0xff};
 // Parameters for directly drawing a textured quad to the screen.
 //
 // Coordinates are in f32 screen space pixels:
-// X: [0.f, 640.f]
-// Y: [0.f, 480.f]
-// The coordinate system is the same across 4:3 and 16:9, though in 16:9 textures are "unstretched"
+// X: [0.f, 640.f] (left to right)
+// Y: [0.f, 480.f] (top to bottom)
+// The coordinate system applies in both 4:3 and 16:9, though in 16:9 textures are "unstretched"
 // about `widescreen_x`.
 struct TextureRequest {
     // Texture to draw, obtainable from e.g. `mkb::TplBuffer.texobjs`
@@ -36,16 +36,16 @@ struct TextureRequest {
     // Width and height in screen space pixels
     Vec2d size;
     // Z position, used for stack order
-    f32 depth;
+    f32 depth = -0.025;
     // Screen space X position about which to unstretch texture in widescreen.
     // Another way to think about it: whichever part of your texture is at this X position will not
-    // not move.
+    // not move
     f32 widescreen_x = (f32)SCREEN_WIDTH / 2.f;
 
     // Pivot point UV coordinate. This point in the texture is positioned at `pos`
     Vec2d pivot_uv = {0.5f, 0.5f};
     // If you want to draw a subregion of a texture, you can override the texture UV coordinate
-    // range.
+    // range
     Vec2d min_uv = {0.f, 0.f};
     Vec2d max_uv = {1.f, 1.f};
 

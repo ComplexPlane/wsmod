@@ -4716,6 +4716,18 @@ enum {
 typedef undefined4 GXChannelID;
 
 enum {
+    GX_NEVER=0,
+    GX_LESS=1,
+    GX_EQUAL=2,
+    GX_LEQUAL=3,
+    GX_GREATER=4,
+    GX_NEQUAL=5,
+    GX_GEQUAL=6,
+    GX_ALWAYS=7
+};
+typedef undefined4 GXCompare;
+
+enum {
     VI_XFBMODE_SF=0,
     VI_XFBMODE_DF=1
 };
@@ -5021,18 +5033,6 @@ enum {
     GX_MAX_VTXFMT=8
 };
 typedef undefined4 GXVtxFmt;
-
-enum {
-    GX_NEVER=0,
-    GX_LESS=1,
-    GX_EQUAL=2,
-    GX_LEQUAL=3,
-    GX_GREATER=4,
-    GX_NEQUAL=5,
-    GX_GEQUAL=6,
-    GX_ALWAYS=7
-};
-typedef undefined4 GXCompare;
 
 enum {
     GX_PNMTX0=0,
@@ -6989,7 +6989,7 @@ extern "C" {
     void GXSetNumChans_cached(u8 nChans);
     void GXSetChanCtrl_cached(GXChannelID  chan, GXBool enable, GXColorSrc  amb_src, GXColorSrc  mat_src, u32 light_mask, GXDiffuseFn  diff_fn, GXAttnFn  attn_fn);
     void GXSetZMode_cached(GXBool compare_enable, GXCompare  func, GXBool update_enable);
-    void g_read_something_from_prev_GX_settings(undefined1 * param_1, undefined4 * param_2, undefined1 * param_3);
+    void get_cached_gx_z_mode(GXBool * compare_enable, GXCompare  * func, GXBool * update_enable);
     void g_set_some_gx_settings(void);
     void g_draw_something(double param_1, double param_2, double param_3, ushort * param_4);
     void mark_finished_waiting_for_dvdread(s32 result, struct DVDFileInfo * file_info);

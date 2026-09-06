@@ -30,6 +30,7 @@ void stobj_init() {
 
 void stobj_tick() {
     things::stobj_tick();
+    hud::stobj_tick();
 }
 
 void preanim_tick() {

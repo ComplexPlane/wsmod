@@ -4,6 +4,7 @@
 #include "draw.h"
 #include "math_utils.h"
 #include "mkb/mkb.h"
+#include "relutil.h"
 #include "slider.h"
 
 using namespace mathutils;
@@ -21,6 +22,8 @@ enum class HudTex {
     Bas = 2,
 };
 
+u32 s_timer;
+
 void draw_callback(void* ctx) {
     draw::TextureRequest req = {
         .texobj = assets::get_texobj((u32)HudTex::Foo),
@@ -36,7 +39,7 @@ void draw_callback(void* ctx) {
     req = {
         .texobj = assets::get_texobj((u32)HudTex::Bar),
         .pos = {500, 350},
-        .rot = deg_to_s16(mkb::frame_counter),
+        .rot = deg_to_s16(s_timer),
         .size = {75, 75},
         .depth = DEPTH,
         .widescreen_x = 500,
@@ -48,6 +51,10 @@ void draw_callback(void* ctx) {
 }
 
 }  // namespace
+
+void stobj_tick() {
+    s_timer++;
+}
 
 void draw_2d() {
     if (mkb::main_mode != mkb::MD_GAME) return;

@@ -158,8 +158,13 @@ void texture(TextureRequest* req) {
     mkb::set_ui_widescreen_scale_mtx(req->widescreen_x);
     mkb::GXSetTevColor(mkb::GX_TEVREG0, req->mul_color);
     mkb::GXSetTevColor(mkb::GX_TEVREG1, req->add_color);
-    // Ensures that same-depth sprites are drawn in request order
-    // mkb::GXSetZMode_cached(mkb::GX_TRUE, mkb::GX_ALWAYS, mkb::GX_TRUE);
+
+    // Ensure that same-depth sprites are drawn in request order
+    mkb::GXBool compare_enable = {};
+    mkb::GXCompare compare_func = {};
+    mkb::GXBool update_enable = {};
+    mkb::get_cached_gx_z_mode(&compare_enable, &compare_func, &update_enable);
+    mkb::GXSetZMode_cached(mkb::GX_TRUE, mkb::GX_ALWAYS, mkb::GX_TRUE);
 
     // Send vertex data
     auto write_vertex = [](Vec* pos, Vec2d* uv) {
@@ -172,7 +177,9 @@ void texture(TextureRequest* req) {
     write_vertex(&pos_bottom_right, &uv_bottom_right);
     write_vertex(&pos_bottom_left, &uv_bottom_left);
 
+    // Reset persistent state
     mkb::reset_ui_widescreen_scale_mtx();
+    mkb::GXSetZMode_cached(compare_enable, compare_func, update_enable);
 }
 
 void tick() {

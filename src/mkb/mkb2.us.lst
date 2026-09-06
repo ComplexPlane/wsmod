@@ -110,7 +110,7 @@
 80008B58:GXSetNumChans_cached
 80008BA8:GXSetChanCtrl_cached
 80008D24:GXSetZMode_cached
-80008DCC:g_read_something_from_prev_GX_settings
+80008DCC:get_cached_gx_z_mode
 80008DF4:g_set_some_gx_settings
 80009008:g_draw_something
 800092CC:FUN_800092cc

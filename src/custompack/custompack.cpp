@@ -45,10 +45,7 @@ void gameheap_init() {
 }
 
 void draw_2d() {
-}
-
-void draw_sprites() {
-    hud::draw_sprites();
+    hud::draw_2d();
 }
 
 }  // namespace custompack

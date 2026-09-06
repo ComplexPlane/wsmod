@@ -124,6 +124,11 @@ class Vector {
         mkb::memset(m_elems, 0, m_count * sizeof(T));
     }
 
+    void reset() {
+        clear();
+        m_count = 0;
+    }
+
     void sort(SortFunc<T> sort_func) {
         mkb::qsort(m_elems, m_count, sizeof(T), sort_func);
     }

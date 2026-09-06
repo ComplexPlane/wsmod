@@ -4,19 +4,17 @@
 
 namespace draw {
 
-inline constexpr u32 DEBUG_CHAR_WIDTH = 0xc;
-
 inline constexpr u32 SCREEN_WIDTH = 640;
 inline constexpr u32 SCREEN_HEIGHT = 480;
 
-inline constexpr mkb::GXColor WHITE = {0xff, 0xff, 0xff, 0xff};
-inline constexpr mkb::GXColor BLACK = {0x00, 0x00, 0x00, 0xff};
-inline constexpr mkb::GXColor RED = {0xfd, 0x68, 0x75, 0xff};
-inline constexpr mkb::GXColor ORANGE = {0xfd, 0xac, 0x68, 0xff};
-inline constexpr mkb::GXColor BLUE = {0x9d, 0xe3, 0xff, 0xff};
-inline constexpr mkb::GXColor PINK = {0xdf, 0x7f, 0xfa, 0xff};
-inline constexpr mkb::GXColor PURPLE = {0xb1, 0x5a, 0xff, 0xff};
-inline constexpr mkb::GXColor GREEN = {0x00, 0xff, 0x00, 0xff};
+inline constexpr GXColor WHITE = {0xff, 0xff, 0xff, 0xff};
+inline constexpr GXColor BLACK = {0x00, 0x00, 0x00, 0xff};
+inline constexpr GXColor RED = {0xfd, 0x68, 0x75, 0xff};
+inline constexpr GXColor ORANGE = {0xfd, 0xac, 0x68, 0xff};
+inline constexpr GXColor BLUE = {0x9d, 0xe3, 0xff, 0xff};
+inline constexpr GXColor PINK = {0xdf, 0x7f, 0xfa, 0xff};
+inline constexpr GXColor PURPLE = {0xb1, 0x5a, 0xff, 0xff};
+inline constexpr GXColor GREEN = {0x00, 0xff, 0x00, 0xff};
 
 // Parameters for directly drawing a textured quad to the screen.
 //
@@ -55,28 +53,23 @@ struct TextureRequest {
     GXColor add_color = {0x00, 0x00, 0x00, 0x00};
 };
 
-// Call once during mod initialization
-void init();
-
-// Call once per frame in the mkb 2d drawing hook
-void disp();
-
-// Call once per frame in the mkb 2d drawing hook before all other disp functions of other things
-void predraw();
+void tick();
 
 /*
  * Functions which draw immediately
  */
 
-void rect(float x1, float y1, float x2, float y2, mkb::GXColor color);
-void debug_text(s32 x, s32 y, mkb::GXColor color, char* format, ...);
 void texture(TextureRequest* req);
 
 /*
- * Functions which cause drawing during disp() and don't necessarily need to be called each frame
+ * Functions which draw later
  */
 
-// Show a notification in the bottom-right of the screen which fades out after a short period
-void notify(mkb::GXColor color, char* format, ...);
+void enqueue_sprite_internal(f32 depth, void* context, void* draw_func);
+
+template <typename T>
+void sprite_sorted(f32 depth, T* context, void (*draw_func)(T* context)) {
+    enqueue_sprite_internal(depth, (void*)context, (void*)draw_func);
+}
 
 }  // namespace draw

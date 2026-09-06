@@ -2,6 +2,7 @@
 #include "containers.h"
 #include "draw.h"
 #include "math_utils.h"
+#include "mkb/mkb.h"
 #include "pad.h"
 
 namespace slider {
@@ -68,8 +69,12 @@ void disp() {
         for (u32 i = 0; i < s_sliders.count(); i++) {
             Slider* slider = &s_sliders[i];
             const char* prefix = i == s_selected_slider ? "->" : "  ";
-            draw::debug_text(400, 10 + i * 15, draw::GREEN, "%s %s = %.2f", prefix, slider->name,
-                             slider->value);
+
+            mkb::textdraw_reset();
+            mkb::textdraw_set_font(mkb::FONT_ASC_16x16);
+            mkb::textdraw_set_pos(400, 10 + i * 15);
+            mkb::textdraw_set_mul_color(RGBA(0, 0xff, 0, 0xff));
+            mkb::textdraw_printf("%s %s = %.2f", prefix, slider->name, slider->value);
         }
     }
 }

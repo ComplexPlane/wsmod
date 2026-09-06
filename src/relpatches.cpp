@@ -5,6 +5,7 @@
 #include "custompack/assets.h"
 #include "custompack/custompack.h"
 #include "custompack/load_stageconf.h"
+#include "draw.h"
 #include "gameheaps.h"
 #include "math_utils.h"
 #include "mkb/mkb.h"
@@ -210,6 +211,10 @@ const u32 PATCH_COUNT = sizeof(patches) / sizeof(patches[0]);
 
 // "Patches" that are always enabled
 Tickable modules[] = {
+    {
+        .name = "draw",
+        .tick_func = draw::tick,
+    },
     {
         .name = "slider",
         .disp_func = slider::disp,

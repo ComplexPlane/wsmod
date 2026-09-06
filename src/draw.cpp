@@ -4,7 +4,6 @@
 #include "logging.h"
 #include "mkb/mkb.h"
 
-#include "assembly.h"
 #include "containers.h"
 #include "math_utils.h"
 #include "patch.h"
@@ -14,8 +13,10 @@ namespace draw {
 
 namespace {
 
+typedef void (*DrawFunc)(void* ctx);
+
 struct SpriteRequest {
-    void* draw_func;
+    DrawFunc draw_func;
     void* context;
     f32 depth;
 };
@@ -26,14 +27,33 @@ cnt::Vector<SpriteRequest> s_sprite_requests{s_sprite_requests_buf, LEN(s_sprite
 
 void draw_sorted_sprites(mkb::BOOL32 some_condition) {
     mkb::SpriteListNode* node = mkb::depth_sorted_sprites[0].prev;
+    u32 our_sprite_idx = 0;
+
     for (; node->sprite != (mkb::Sprite*)0x0; node = node->prev) {
         mkb::Sprite* sprite = node->sprite;
+
+        // Merge our sprites into the draw sequence
+        while (our_sprite_idx < s_sprite_requests.count() &&
+               s_sprite_requests[our_sprite_idx].depth < sprite->depth) {
+            SpriteRequest* req = &s_sprite_requests[our_sprite_idx];
+            req->draw_func(req->context);
+            our_sprite_idx++;
+        }
+
         mkb::textdraw_reset();
         mkb::draw_sprite(sprite);
         for (; sprite->next_sprite != nullptr; sprite = sprite->next_sprite) {
             mkb::draw_sprite(sprite->next_sprite);
         }
     }
+
+    // Draw whichever of our sprites lie on top of all game sprites, if any
+    while (our_sprite_idx < s_sprite_requests.count()) {
+        SpriteRequest* req = &s_sprite_requests[our_sprite_idx];
+        req->draw_func(req->context);
+        our_sprite_idx++;
+    }
+
     if (mkb::main_mode == mkb::MD_MINI) {
         mkb::g_md_mini_sprite_disp();
     }
@@ -91,17 +111,22 @@ void sort_sprites(mkb::BOOL32 some_condition) {
     } while (true);
 }
 
+int compare_sprite_requests(const SpriteRequest* a, const SpriteRequest* b) {
+    if (a->depth < b->depth) return -1;
+    if (a->depth > b->depth) return 1;
+    return 0;
+}
+
 void sort_and_draw_sprites(mkb::BOOL32 some_condition) {
+    s_sprite_requests.sort(compare_sprite_requests);
     sort_sprites(some_condition);
     draw_sorted_sprites(some_condition);
 }
 
-TRAMP(s_draw_sprites_tramp, mkb::sort_and_draw_sprites, sort_and_draw_sprites);
-
 }  // namespace
 
 void init() {
-    HOOK_TRAMP(s_draw_sprites_tramp);
+    patch::write_branch_bl((void*)relutil::relocate_addr(0x80299ECC), (void*)sort_and_draw_sprites);
 }
 
 void texture(TextureRequest* req) {
@@ -155,7 +180,7 @@ void tick() {
 
 void enqueue_sprite_internal(f32 depth, void* context, void* draw_func) {
     s_sprite_requests.push(SpriteRequest{
-        .draw_func = draw_func,
+        .draw_func = (DrawFunc)draw_func,
         .context = context,
         .depth = depth,
     });

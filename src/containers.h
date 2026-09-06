@@ -130,7 +130,7 @@ class Vector {
     }
 
     void sort(SortFunc<T> sort_func) {
-        mkb::qsort(m_elems, m_count, sizeof(T), sort_func);
+        mkb::qsort(m_elems, m_count, sizeof(T), (mkb::__compar_fn_t)sort_func);
     }
 
     Array<T> as_array() {

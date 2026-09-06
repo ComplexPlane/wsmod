@@ -21,8 +21,7 @@ struct DrawRequest {
     f32 depth;
 };
 
-constexpr u32 MAX_SPRITES = 64;
-DrawRequest s_draw_requests_buf[MAX_SPRITES];
+DrawRequest s_draw_requests_buf[64];
 cnt::Vector<DrawRequest> s_draw_requests{s_draw_requests_buf, LEN(s_draw_requests_buf)};
 
 void draw_sorted_sprites(mkb::BOOL32 some_condition) {

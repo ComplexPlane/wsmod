@@ -70,7 +70,8 @@ void texture(TextureRequest* req);
 void enqueue_draw_request_internal(f32 depth, void* context, void* draw_func);
 
 // Requests arbitrary 2D rendering to occur at the specified depth. It is depth-sorted alongside the
-// game's sprites. Depth should be >0 to draw under the pause menu.
+// game's sprites. Positive depth is away from the viewer. Depth should be >0 to draw under the
+// pause menu.
 template <typename T>
 void defer(f32 depth, T* context, void (*draw_func)(T* context)) {
     enqueue_draw_request_internal(depth, (void*)context, (void*)draw_func);

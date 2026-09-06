@@ -27,17 +27,16 @@ cnt::Vector<SpriteRequest> s_sprite_requests{s_sprite_requests_buf, LEN(s_sprite
 
 void draw_sorted_sprites(mkb::BOOL32 some_condition) {
     mkb::SpriteListNode* node = mkb::depth_sorted_sprites[0].prev;
-    u32 our_sprite_idx = 0;
+    s32 our_sprite_idx = s_sprite_requests.count() - 1;
 
     for (; node->sprite != (mkb::Sprite*)0x0; node = node->prev) {
         mkb::Sprite* sprite = node->sprite;
 
         // Merge our sprites into the draw sequence
-        while (our_sprite_idx < s_sprite_requests.count() &&
-               s_sprite_requests[our_sprite_idx].depth < sprite->depth) {
+        while (our_sprite_idx >= 0 && s_sprite_requests[our_sprite_idx].depth >= sprite->depth) {
             SpriteRequest* req = &s_sprite_requests[our_sprite_idx];
             req->draw_func(req->context);
-            our_sprite_idx++;
+            our_sprite_idx--;
         }
 
         mkb::textdraw_reset();
@@ -48,10 +47,10 @@ void draw_sorted_sprites(mkb::BOOL32 some_condition) {
     }
 
     // Draw whichever of our sprites lie on top of all game sprites, if any
-    while (our_sprite_idx < s_sprite_requests.count()) {
+    while (our_sprite_idx >= 0) {
         SpriteRequest* req = &s_sprite_requests[our_sprite_idx];
         req->draw_func(req->context);
-        our_sprite_idx++;
+        our_sprite_idx--;
     }
 
     if (mkb::main_mode == mkb::MD_MINI) {

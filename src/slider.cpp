@@ -10,6 +10,7 @@ namespace slider {
 namespace {
 
 constexpr bool SHOW_SLIDERS = true;
+constexpr f32 DEPTH = 0;
 
 struct Slider {
     const char* name;
@@ -20,6 +21,22 @@ struct Slider {
 Slider s_slider_buf[16];
 cnt::Vector<Slider> s_sliders{s_slider_buf, LEN(s_slider_buf)};
 u32 s_selected_slider = 0;
+
+void draw_callback(void* ctx) {
+    if (SHOW_SLIDERS) {
+        for (u32 i = 0; i < s_sliders.count(); i++) {
+            Slider* slider = &s_sliders[i];
+            const char* prefix = i == s_selected_slider ? "->" : "  ";
+
+            mkb::textdraw_reset();
+            mkb::textdraw_set_font(mkb::FONT_ASC_12x12);
+            mkb::textdraw_set_pos(400, 10 + i * 15);
+            mkb::textdraw_set_mul_color(RGBA(0, 0xff, 0, 0xff));
+            mkb::textdraw_set_depth(DEPTH);
+            mkb::textdraw_printf("%s %s = %.2f", prefix, slider->name, slider->value);
+        }
+    }
+}
 
 }  // namespace
 
@@ -64,18 +81,8 @@ void tick() {
     }
 }
 
-void disp() {
-    if (SHOW_SLIDERS) {
-        for (u32 i = 0; i < s_sliders.count(); i++) {
-            Slider* slider = &s_sliders[i];
-            const char* prefix = i == s_selected_slider ? "->" : "  ";
-
-            mkb::textdraw_reset();
-            mkb::textdraw_set_font(mkb::FONT_ASC_16x16);
-            mkb::textdraw_set_pos(400, 10 + i * 15);
-            mkb::textdraw_set_mul_color(RGBA(0, 0xff, 0, 0xff));
-            mkb::textdraw_printf("%s %s = %.2f", prefix, slider->name, slider->value);
-        }
-    }
+void draw_2d() {
+    draw::sprite_sorted(DEPTH, (void*)nullptr, draw_callback);
 }
+
 }  // namespace slider

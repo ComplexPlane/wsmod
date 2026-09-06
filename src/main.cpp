@@ -77,13 +77,9 @@ void on_did_load_stagedef_hook(u32 stage_id) {
     }
 }
 
-TRAMP(s_draw_debugtext_tramp, mkb::draw_debugtext, []() {
-    // Drawing hook for UI elements.
-    // Gets run at the start of smb2's function which draws debug text windows,
-    // which is called at the end of smb2's function which draws the UI in general.
-    // Disp functions (REL patches)
+TRAMP(s_draw_2d_hook, mkb::draw_ui, []() {
     run_tickable_func([](auto tickable) { return tickable.disp_func; });
-    s_draw_debugtext_tramp.chain();
+    s_draw_2d_hook.chain();
 });
 
 TRAMP(s_process_inputs_tramp, mkb::process_inputs, []() {
@@ -137,7 +133,7 @@ TRAMP(s_preanim_tramp, mkb::g_advance_stage_animation, [] {
 });
 
 void hook_c_patches() {
-    HOOK_TRAMP(s_draw_debugtext_tramp);
+    HOOK_TRAMP(s_draw_2d_hook);
     HOOK_TRAMP(s_process_inputs_tramp);
     HOOK_TRAMP(s_OSLink_tramp);
     HOOK_TRAMP(s_draw_stage_tramp);

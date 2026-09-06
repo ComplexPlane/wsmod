@@ -218,7 +218,7 @@ Tickable modules[] = {
     },
     {
         .name = "slider",
-        .disp_func = slider::disp,
+        .disp_func = slider::draw_2d,
         .tick_func = slider::tick,
     },
     {
@@ -227,6 +227,7 @@ Tickable modules[] = {
     },
     {
         .name = "custompack",
+        .disp_func = custompack::draw_2d,
         .draw_stage_func = custompack::draw_stage,
         .draw_view_stage_func = custompack::draw_view_stage,
         .stobj_init_func = custompack::stobj_init,

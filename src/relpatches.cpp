@@ -213,6 +213,7 @@ const u32 PATCH_COUNT = sizeof(patches) / sizeof(patches[0]);
 Tickable modules[] = {
     {
         .name = "draw",
+        .main_loop_init_func = draw::init,
         .tick_func = draw::tick,
     },
     {

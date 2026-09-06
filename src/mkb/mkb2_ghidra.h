@@ -1926,15 +1926,6 @@ enum {
 };
 typedef undefined4 ModeFlag;
 
-typedef struct GSomeSpriteStruct GSomeSpriteStruct, *PGSomeSpriteStruct;
-
-struct GSomeSpriteStruct {
-    struct Sprite * g_some_sprite;
-    struct GSomeSpriteStruct * g_prev;
-    struct GSomeSpriteStruct * g_next;
-} __attribute__((__packed__));
-static_assert(sizeof(GSomeSpriteStruct) == 0xc);
-
 typedef struct GStaffRollStruct GStaffRollStruct, *PGStaffRollStruct;
 
 struct GStaffRollStruct {
@@ -2439,6 +2430,15 @@ struct FontDefinition {
     float field23_0x34;
 } __attribute__((__packed__));
 static_assert(sizeof(FontDefinition) == 0x38);
+
+typedef struct SpriteListNode SpriteListNode, *PSpriteListNode;
+
+struct SpriteListNode {
+    struct Sprite * sprite;
+    struct SpriteListNode * next;
+    struct SpriteListNode * prev;
+} __attribute__((__packed__));
+static_assert(sizeof(SpriteListNode) == 0xc);
 
 typedef struct TevBuildCtx TevBuildCtx, *PTevBuildCtx;
 
@@ -6425,7 +6425,7 @@ extern "C" {
     extern struct GmaModel * goal_LCD_small_numbers[10];
     extern struct GmaModel * goal_LCD_large_numbers[10];
     extern struct Sprite sprites[80];
-    extern struct GSomeSpriteStruct g_some_sprite_structs[82];
+    extern struct SpriteListNode depth_sorted_sprites[82];
     extern undefined4 g_some_sprite_width;
     extern undefined4 g_some_sprite_height;
     extern undefined4 g_screenfade_flags;
@@ -9618,7 +9618,7 @@ extern "C" {
     void event_sprite_init(void);
     void event_sprite_tick(void);
     void event_sprite_dest(void);
-    void g_smth_with_drawing_all_sprites(int param_1);
+    void sort_and_draw_sprites(BOOL32 some_condition);
     void draw_sprite(struct Sprite * sprite);
     void load_bmp_by_id(int param_1);
     void call_free_bmp_by_id(int param_1);
@@ -9692,6 +9692,7 @@ extern "C" {
     float textdraw_get_pixel_width_of_string_child(char * string);
     int g_smth_with_fonts_chara_load_wrapper(char * param_1);
     int textdraw_get_line_count_of_string_child(char * param_1);
+    void g_draw_playpoint_or_gift_sprites(void);
     void g_display_playpoint_or_gift_message_child(int param_1, int param_2, int * param_3);
     void g_smth_with_playpoint_or_gift_msg(int param_1, char * param_2);
     void g_some_printf_function_4(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, char * param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
@@ -9844,6 +9845,7 @@ extern "C" {
     void g_smd_mini_generic_init(void);
     void g_smd_mini_generic_tick(void);
     void g_mini_draw_func_handler(void);
+    void g_md_mini_sprite_disp(void);
     void smd_mini_select_init(void);
     void smd_mini_select_tick(void);
     void smd_mini_ending_init(void);

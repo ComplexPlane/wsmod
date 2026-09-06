@@ -5732,7 +5732,7 @@
 1,1,000AE518:event_sprite_init
 1,1,000AE5BC:event_sprite_tick
 1,1,000AE6D0:event_sprite_dest
-1,1,000AE790:g_smth_with_drawing_all_sprites
+1,1,000AE790:sort_and_draw_sprites
 1,1,000AE99C:FUN_8024893c
 1,1,000AEA1C:draw_sprite
 1,1,000AEB50:prt_80248af0_f3434af
@@ -6194,7 +6194,7 @@
 1,1,000B7DDC:caseD_12
 1,1,000B7DDC:caseD_13
 1,1,000B7F68:FUN_80251f08
-1,1,000B7F98:FUN_80251f38
+1,1,000B7F98:g_draw_playpoint_or_gift_sprites
 1,1,000B800C:FUN_80251fac
 1,1,000B8858:switchD
 1,1,000B885C:caseD_1
@@ -6627,7 +6627,7 @@
 1,1,000D5DAC:g_smd_mini_generic_init
 1,1,000D5F28:g_smd_mini_generic_tick
 1,1,000D5F6C:g_mini_draw_func_handler
-1,1,000D5FB0:FUN_8026ff50
+1,1,000D5FB0:g_md_mini_sprite_disp
 1,1,000D5FF4:FUN_8026ff94
 1,1,000D60C0:smd_mini_select_init
 1,1,000D615C:smd_mini_select_tick
@@ -9186,7 +9186,7 @@
 1,6,0009C778:goal_LCD_small_numbers
 1,6,0009C7A0:goal_LCD_large_numbers
 1,6,0009C7CC:sprites
-1,6,000A08CC:g_some_sprite_structs
+1,6,000A08CC:depth_sorted_sprites
 1,6,000A0CA8:g_some_sprite_width
 1,6,000A0CAC:g_some_sprite_height
 1,6,000A0CB0:g_screenfade_flags

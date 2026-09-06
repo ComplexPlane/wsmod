@@ -53,6 +53,7 @@ struct TextureRequest {
     GXColor add_color = {0x00, 0x00, 0x00, 0x00};
 };
 
+void init();
 void tick();
 
 /*

@@ -24,14 +24,29 @@ constexpr u32 MAX_SPRITES = 64;
 SpriteRequest s_sprite_requests_buf[MAX_SPRITES];
 cnt::Vector<SpriteRequest> s_sprite_requests{s_sprite_requests_buf, LEN(s_sprite_requests_buf)};
 
-void sort_and_draw_sprites(mkb::BOOL32 some_condition) {
+void draw_sorted_sprites(mkb::BOOL32 some_condition) {
+    mkb::SpriteListNode* node = mkb::depth_sorted_sprites[0].prev;
+    for (; node->sprite != (mkb::Sprite*)0x0; node = node->prev) {
+        mkb::Sprite* sprite = node->sprite;
+        mkb::textdraw_reset();
+        mkb::draw_sprite(sprite);
+        for (; sprite->next_sprite != nullptr; sprite = sprite->next_sprite) {
+            mkb::draw_sprite(sprite->next_sprite);
+        }
+    }
+    if (mkb::main_mode == mkb::MD_MINI) {
+        mkb::g_md_mini_sprite_disp();
+    }
+    mkb::g_draw_playpoint_or_gift_sprites();
+}
+
+void sort_sprites(mkb::BOOL32 some_condition) {
     mkb::uint is_view_stage;
     u8* sprite_status;
     int node_pos;
     int sprite_idx;
     mkb::SpriteListNode* g_sss;
     mkb::SpriteListNode* pSVar3;
-    mkb::Sprite* sprite;
 
     is_view_stage = mkb::events[mkb::EVENT_VIEW].status != 0;
     node_pos = 2;
@@ -46,18 +61,6 @@ void sort_and_draw_sprites(mkb::BOOL32 some_condition) {
     do {
         pSVar3 = mkb::depth_sorted_sprites[0].prev;
         if ((int)mkb::sprite_pool_info.upper_bound <= sprite_idx) {
-            for (; pSVar3->sprite != (mkb::Sprite*)0x0; pSVar3 = pSVar3->prev) {
-                sprite = pSVar3->sprite;
-                mkb::textdraw_reset();
-                draw_sprite(sprite);
-                for (; sprite->next_sprite != (mkb::Sprite*)0x0; sprite = sprite->next_sprite) {
-                    draw_sprite(sprite->next_sprite);
-                }
-            }
-            if (mkb::main_mode == mkb::MD_MINI) {
-                mkb::g_md_mini_sprite_disp();
-            }
-            mkb::g_draw_playpoint_or_gift_sprites();
             return;
         }
         if (*sprite_status != '\0') {
@@ -86,6 +89,11 @@ void sort_and_draw_sprites(mkb::BOOL32 some_condition) {
         sprite_idx = sprite_idx + 1;
         sprite_status = sprite_status + 1;
     } while (true);
+}
+
+void sort_and_draw_sprites(mkb::BOOL32 some_condition) {
+    sort_sprites(some_condition);
+    draw_sorted_sprites(some_condition);
 }
 
 TRAMP(s_draw_sprites_tramp, mkb::sort_and_draw_sprites, sort_and_draw_sprites);

@@ -82,7 +82,7 @@ void tick() {
 }
 
 void draw_2d() {
-    draw::sprite_sorted(DEPTH, (void*)nullptr, draw_callback);
+    draw::defer(DEPTH, (void*)nullptr, draw_callback);
 }
 
 }  // namespace slider

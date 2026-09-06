@@ -2,7 +2,6 @@
 
 #include "assets.h"
 #include "draw.h"
-#include "logging.h"
 #include "math_utils.h"
 #include "mkb/mkb.h"
 #include "slider.h"
@@ -52,7 +51,7 @@ void draw_callback(void* ctx) {
 void draw_2d() {
     if (mkb::main_mode != mkb::MD_GAME) return;
 
-    draw::sprite_sorted(DEPTH, (void*)nullptr, draw_callback);
+    draw::defer(DEPTH, (void*)nullptr, draw_callback);
 }
 
 }  // namespace custompack::hud

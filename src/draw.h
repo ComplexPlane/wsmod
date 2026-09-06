@@ -66,11 +66,11 @@ void texture(TextureRequest* req);
  * Functions which draw later
  */
 
-void enqueue_sprite_internal(f32 depth, void* context, void* draw_func);
+void enqueue_draw_request_internal(f32 depth, void* context, void* draw_func);
 
 template <typename T>
-void sprite_sorted(f32 depth, T* context, void (*draw_func)(T* context)) {
-    enqueue_sprite_internal(depth, (void*)context, (void*)draw_func);
+void defer(f32 depth, T* context, void (*draw_func)(T* context)) {
+    enqueue_draw_request_internal(depth, (void*)context, (void*)draw_func);
 }
 
 }  // namespace draw

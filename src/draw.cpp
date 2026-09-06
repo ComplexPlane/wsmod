@@ -15,28 +15,28 @@ namespace {
 
 typedef void (*DrawFunc)(void* ctx);
 
-struct SpriteRequest {
+struct DrawRequest {
     DrawFunc draw_func;
     void* context;
     f32 depth;
 };
 
 constexpr u32 MAX_SPRITES = 64;
-SpriteRequest s_sprite_requests_buf[MAX_SPRITES];
-cnt::Vector<SpriteRequest> s_sprite_requests{s_sprite_requests_buf, LEN(s_sprite_requests_buf)};
+DrawRequest s_draw_requests_buf[MAX_SPRITES];
+cnt::Vector<DrawRequest> s_draw_requests{s_draw_requests_buf, LEN(s_draw_requests_buf)};
 
 void draw_sorted_sprites(mkb::BOOL32 some_condition) {
     mkb::SpriteListNode* node = mkb::depth_sorted_sprites[0].prev;
-    s32 our_sprite_idx = s_sprite_requests.count() - 1;
+    s32 draw_req_idx = s_draw_requests.count() - 1;
 
     for (; node->sprite != (mkb::Sprite*)0x0; node = node->prev) {
         mkb::Sprite* sprite = node->sprite;
 
-        // Merge our sprites into the draw sequence
-        while (our_sprite_idx >= 0 && s_sprite_requests[our_sprite_idx].depth >= sprite->depth) {
-            SpriteRequest* req = &s_sprite_requests[our_sprite_idx];
+        // Merge our draw requests into the draw sequence
+        while (draw_req_idx >= 0 && s_draw_requests[draw_req_idx].depth >= sprite->depth) {
+            DrawRequest* req = &s_draw_requests[draw_req_idx];
             req->draw_func(req->context);
-            our_sprite_idx--;
+            draw_req_idx--;
         }
 
         mkb::textdraw_reset();
@@ -47,10 +47,10 @@ void draw_sorted_sprites(mkb::BOOL32 some_condition) {
     }
 
     // Draw whichever of our sprites lie on top of all game sprites, if any
-    while (our_sprite_idx >= 0) {
-        SpriteRequest* req = &s_sprite_requests[our_sprite_idx];
+    while (draw_req_idx >= 0) {
+        DrawRequest* req = &s_draw_requests[draw_req_idx];
         req->draw_func(req->context);
-        our_sprite_idx--;
+        draw_req_idx--;
     }
 
     if (mkb::main_mode == mkb::MD_MINI) {
@@ -110,14 +110,14 @@ void sort_sprites(mkb::BOOL32 some_condition) {
     } while (true);
 }
 
-int compare_sprite_requests(const SpriteRequest* a, const SpriteRequest* b) {
+int compare_sprite_requests(const DrawRequest* a, const DrawRequest* b) {
     if (a->depth < b->depth) return -1;
     if (a->depth > b->depth) return 1;
     return 0;
 }
 
 void sort_and_draw_sprites(mkb::BOOL32 some_condition) {
-    s_sprite_requests.sort(compare_sprite_requests);
+    s_draw_requests.sort(compare_sprite_requests);
     sort_sprites(some_condition);
     draw_sorted_sprites(some_condition);
 }
@@ -174,11 +174,11 @@ void texture(TextureRequest* req) {
 }
 
 void tick() {
-    s_sprite_requests.reset();
+    s_draw_requests.reset();
 }
 
-void enqueue_sprite_internal(f32 depth, void* context, void* draw_func) {
-    s_sprite_requests.push(SpriteRequest{
+void enqueue_draw_request_internal(f32 depth, void* context, void* draw_func) {
+    s_draw_requests.push(DrawRequest{
         .draw_func = (DrawFunc)draw_func,
         .context = context,
         .depth = depth,

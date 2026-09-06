@@ -12,7 +12,7 @@ namespace custompack::hud {
 
 namespace {
 
-constexpr f32 DEPTH = -0.25;
+constexpr f32 DEPTH = 0.1;
 
 // Texture indices in HUD TPL
 enum class HudTex {
@@ -24,24 +24,25 @@ enum class HudTex {
 void draw_callback(void* ctx) {
     draw::TextureRequest req = {
         .texobj = assets::get_texobj((u32)HudTex::Foo),
-        .pos = {slider::get("tex x", 500), slider::get("tex y", 300)},
+        .pos = {500, 300},
         .size = {50, 50},
         .depth = DEPTH,
-        .widescreen_x = 200,
+        .widescreen_x = 500,
         // Add some blue
-        .add_color = {.r = 0, .g = 0, .b = 0x40, .a = 0},
+        .add_color = {.r = 0, .g = 0, .b = 0x80, .a = 0},
     };
     draw::texture(&req);
 
     req = {
         .texobj = assets::get_texobj((u32)HudTex::Bar),
-        .pos = {400, 200},
-        .rot = deg_to_s16(90),
-        .size = {125, 75},
+        .pos = {500, 350},
+        .rot = deg_to_s16(mkb::frame_counter),
+        .size = {75, 75},
         .depth = DEPTH,
-        .widescreen_x = 125,
-        .pivot_uv = {1, 1},
-        .mul_color = {.a = 0x80},  // 50% transparent
+        .widescreen_x = 500,
+        .pivot_uv = {1, 1},  // Rotate about the bottom right corner
+        .mul_color = {.r = 0xff, .g = 0xff, .b = 0xff, .a = 0x80},  // 50% transparency
+
     };
     draw::texture(&req);
 }

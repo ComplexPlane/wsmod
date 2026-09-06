@@ -132,7 +132,7 @@ void texture(TextureRequest* req) {
     ASSERT(req->texobj != nullptr);
 
     // Compute vertex position transform
-    mkb::mtxa_from_translate_xyz(req->pos.x, req->pos.y, req->depth);
+    mkb::mtxa_from_translate_xyz(req->pos.x, req->pos.y, -req->depth);
     mkb::mtxa_rotate_z(-req->rot);
     mkb::mtxa_scale_xyz(req->size.x, req->size.y, 1);
     mkb::mtxa_translate_xyz(-req->pivot_uv.x, -req->pivot_uv.y, 0);
@@ -158,6 +158,8 @@ void texture(TextureRequest* req) {
     mkb::set_ui_widescreen_scale_mtx(req->widescreen_x);
     mkb::GXSetTevColor(mkb::GX_TEVREG0, req->mul_color);
     mkb::GXSetTevColor(mkb::GX_TEVREG1, req->add_color);
+    // Ensures that same-depth sprites are drawn in request order
+    // mkb::GXSetZMode_cached(mkb::GX_TRUE, mkb::GX_ALWAYS, mkb::GX_TRUE);
 
     // Send vertex data
     auto write_vertex = [](Vec* pos, Vec2d* uv) {

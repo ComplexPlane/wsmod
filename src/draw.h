@@ -33,8 +33,9 @@ struct TextureRequest {
     s16 rot;
     // Width and height in screen space pixels
     Vec2d size;
-    // Z position, used for stack order
-    f32 depth = -0.025;
+    // Z position, used for stack order.
+    // Positive depth is away from camera.
+    f32 depth = 0.025;
     // Screen space X position about which to unstretch texture in widescreen.
     // Another way to think about it: whichever part of your texture is at this X position will not
     // not move
@@ -68,6 +69,8 @@ void texture(TextureRequest* req);
 
 void enqueue_draw_request_internal(f32 depth, void* context, void* draw_func);
 
+// Requests arbitrary 2D rendering to occur at the specified depth. It is depth-sorted alongside the
+// game's sprites. Depth should be >0 to draw under the pause menu.
 template <typename T>
 void defer(f32 depth, T* context, void (*draw_func)(T* context)) {
     enqueue_draw_request_internal(depth, (void*)context, (void*)draw_func);

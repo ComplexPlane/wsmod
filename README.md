@@ -1,4 +1,4 @@
-# wsmod-newmech
+# wsmod - ComplexPlane's Fork
 
 ComplexPlane's fork of SMB2WorkshopMod
-([BombSquad](https://github.com/TheBombSquad/SMB2WorkshopMod), [Eucalyptus](https://github.com/eucalyptusmoon/smB2WorkshopMod)) with a framework for fully custom game mechanics.
+([BombSquad](https://github.com/TheBombSquad/SMB2WorkshopMod), [Eucalyptus](https://github.com/eucalyptusmoon/smB2WorkshopMod)) featuring several improvements, including a framework for fully custom game mechanics.

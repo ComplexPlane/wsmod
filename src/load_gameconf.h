@@ -4,6 +4,6 @@
 
 namespace gameconf {
 
-void load(arena::Arena* arena);
+void load(arena::Arena *arena);
 
 }

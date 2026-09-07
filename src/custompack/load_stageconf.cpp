@@ -12,14 +12,14 @@ namespace custompack::stageconf {
 
 namespace {
 
-const char* THING_TYPES[] = {
+const char *THING_TYPES[] = {
     "FOO",
     "BAR",
     "BAS",
 };
 
-void parse_things(sj_Reader* reader, u32 itemgroup_idx, sj_Value things_json) {
-    custompack::stageconf::ItemGroup* itemgroup =
+void parse_things(sj_Reader *reader, u32 itemgroup_idx, sj_Value things_json) {
+    custompack::stageconf::ItemGroup *itemgroup =
         &custompack::stageconf::conf->itemgroups[itemgroup_idx];
     u32 thing_count = json::parse_array_len(*reader, things_json);
     itemgroup->things.alloc(&mem::stage_arena, thing_count);
@@ -27,7 +27,7 @@ void parse_things(sj_Reader* reader, u32 itemgroup_idx, sj_Value things_json) {
     u32 thing_idx = 0;
     sj_Value thing_json = {};
     while (sj_iter_array(reader, things_json, &thing_json)) {
-        custompack::stageconf::Thing* thing = &itemgroup->things[thing_idx];
+        custompack::stageconf::Thing *thing = &itemgroup->things[thing_idx];
 
         sj_Value key = {}, value = {};
         while (sj_iter_object(reader, thing_json, &key, &value)) {
@@ -45,7 +45,7 @@ void parse_things(sj_Reader* reader, u32 itemgroup_idx, sj_Value things_json) {
     }
 }
 
-void parse_itemgroup(sj_Reader* reader, u32 itemgroup_idx, sj_Value itemgroup_json) {
+void parse_itemgroup(sj_Reader *reader, u32 itemgroup_idx, sj_Value itemgroup_json) {
     sj_Value key = {}, value = {};
     while (sj_iter_object(reader, itemgroup_json, &key, &value)) {
         if (json::eq(key, "things")) {
@@ -56,7 +56,7 @@ void parse_itemgroup(sj_Reader* reader, u32 itemgroup_idx, sj_Value itemgroup_js
 
 // Returns the `itemgroups` top-level field's array value if present.
 // Otherwise, returns an error value.
-sj_Value parse_itemgroups_field(sj_Reader* reader) {
+sj_Value parse_itemgroups_field(sj_Reader *reader) {
     sj_Value root_json = sj_read(reader);
     if (root_json.type == SJ_ERROR) {
         return sj_Value{};  // Error value
@@ -86,7 +86,7 @@ void load_stageconf() {
     // DVD current dir is "stage"
     mkb::sprintf(stageconf_path, "st%03d.json", mkb::g_stage_id_to_load);
     u32 json_text_size = 0;
-    char* json_text = static_cast<char*>(
+    char *json_text = static_cast<char *>(
         json::read_file([](u32 size) { return mkb::OSAllocFromHeap(mkb::stage_heap, size); },
                         stageconf_path, &json_text_size));
 

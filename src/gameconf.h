@@ -20,6 +20,6 @@ struct Config {
     u16 stage_name_offsets[relpatches::STAGE_COUNT];
 };
 
-extern Config* conf;
+extern Config *conf;
 
 }  // namespace gameconf

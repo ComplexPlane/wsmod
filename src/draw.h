@@ -25,7 +25,7 @@ inline constexpr GXColor GREEN = {0x00, 0xff, 0x00, 0xff};
 // about `widescreen_x`.
 struct TextureRequest {
     // Texture to draw, obtainable from e.g. `mkb::TplBuffer.texobjs`
-    mkb::GXTexObj* texobj;
+    mkb::GXTexObj *texobj;
     // Position in screen coordinates (pixels). Rotation is applied in screen space about this
     // point
     Vec2d pos;
@@ -61,20 +61,20 @@ void tick();
  * Functions which draw immediately
  */
 
-void texture(TextureRequest* req);
+void texture(TextureRequest *req);
 
 /*
  * Functions which draw later
  */
 
-void enqueue_draw_request_internal(f32 depth, void* context, void* draw_func);
+void enqueue_draw_request_internal(f32 depth, void *context, void *draw_func);
 
 // Requests arbitrary 2D rendering to occur at the specified depth. It is depth-sorted alongside the
 // game's sprites. Positive depth is away from the viewer. Depth should be >0 to draw under the
 // pause menu.
 template <typename T>
-void defer(f32 depth, T* context, void (*draw_func)(T* context)) {
-    enqueue_draw_request_internal(depth, (void*)context, (void*)draw_func);
+void defer(f32 depth, T *context, void (*draw_func)(T *context)) {
+    enqueue_draw_request_internal(depth, (void *)context, (void *)draw_func);
 }
 
 }  // namespace draw

@@ -12,9 +12,9 @@ namespace custompack::assets {
 void gameheap_init();
 
 // Get a model by name from the custom GMA
-mkb::GmaModel* get_model(const char* model_name);
+mkb::GmaModel *get_model(const char *model_name);
 
 // Get a texture by index from the custom TPL
-mkb::GXTexObj* get_texobj(u32 idx);
+mkb::GXTexObj *get_texobj(u32 idx);
 
 }  // namespace custompack::assets

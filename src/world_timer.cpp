@@ -16,7 +16,7 @@ u32 s_timer = 0;
 
 void tick() {
     // This is when itemgroup animation frame advances.
-    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) &
+    bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) &
                       8;  // TODO actually give this a name
     if (mkb::mode_info.ball_mode & mkb::BALLMODE_IN_STAGE_LOADIN &&
         mkb::sub_mode_frame_counter < 361) {

@@ -12,11 +12,11 @@ void create_merged_game_heaps(int heap_config_idx) {
     // We don't care about the original intended heap sizes, but there's a flag that says where the
     // bounds of the arena we should allocate from are
     if (mkb::heap_configs[heap_config_idx].flags & 1) {
-        mkb::OSSetArenaLo(reinterpret_cast<void*>(mkb::g_some_other_heap_lo));
-        mkb::OSSetArenaHi(reinterpret_cast<void*>(mkb::g_some_other_heap_hi));
+        mkb::OSSetArenaLo(reinterpret_cast<void *>(mkb::g_some_other_heap_lo));
+        mkb::OSSetArenaHi(reinterpret_cast<void *>(mkb::g_some_other_heap_hi));
     } else {
-        mkb::OSSetArenaLo(reinterpret_cast<void*>(mkb::g_some_dead_heap_mem_lo));
-        mkb::OSSetArenaHi(reinterpret_cast<void*>(mkb::g_some_dead_heap_mem_hi));
+        mkb::OSSetArenaLo(reinterpret_cast<void *>(mkb::g_some_dead_heap_mem_lo));
+        mkb::OSSetArenaHi(reinterpret_cast<void *>(mkb::g_some_dead_heap_mem_hi));
     }
 
     // Allocate a single, main heap from the entire arena

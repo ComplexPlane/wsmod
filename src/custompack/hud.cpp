@@ -24,7 +24,7 @@ enum class HudTex {
 
 u32 s_timer;
 
-void draw_callback(void* ctx) {
+void draw_callback(void *ctx) {
     draw::TextureRequest req = {
         .texobj = assets::get_texobj((u32)HudTex::Foo),
         .pos = {500, 300},
@@ -59,7 +59,7 @@ void stobj_tick() {
 void draw_2d() {
     if (mkb::main_mode != mkb::MD_GAME) return;
 
-    draw::defer(DEPTH, (void*)nullptr, draw_callback);
+    draw::defer(DEPTH, (void *)nullptr, draw_callback);
 }
 
 }  // namespace custompack::hud

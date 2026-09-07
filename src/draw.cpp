@@ -13,11 +13,11 @@ namespace draw {
 
 namespace {
 
-typedef void (*DrawFunc)(void* ctx);
+typedef void (*DrawFunc)(void *ctx);
 
 struct DrawRequest {
     DrawFunc draw_func;
-    void* context;
+    void *context;
     f32 depth;
 };
 
@@ -25,15 +25,15 @@ DrawRequest s_draw_requests_buf[64];
 cnt::Vector<DrawRequest> s_draw_requests{s_draw_requests_buf, LEN(s_draw_requests_buf)};
 
 void draw_sorted_sprites(mkb::BOOL32 some_condition) {
-    mkb::SpriteListNode* node = mkb::depth_sorted_sprites[0].prev;
+    mkb::SpriteListNode *node = mkb::depth_sorted_sprites[0].prev;
     s32 draw_req_idx = s_draw_requests.count() - 1;
 
-    for (; node->sprite != (mkb::Sprite*)0x0; node = node->prev) {
-        mkb::Sprite* sprite = node->sprite;
+    for (; node->sprite != (mkb::Sprite *)0x0; node = node->prev) {
+        mkb::Sprite *sprite = node->sprite;
 
         // Merge our draw requests into the draw sequence
         while (draw_req_idx >= 0 && s_draw_requests[draw_req_idx].depth >= sprite->depth) {
-            DrawRequest* req = &s_draw_requests[draw_req_idx];
+            DrawRequest *req = &s_draw_requests[draw_req_idx];
             req->draw_func(req->context);
             draw_req_idx--;
         }
@@ -47,7 +47,7 @@ void draw_sorted_sprites(mkb::BOOL32 some_condition) {
 
     // Draw whichever of our sprites lie on top of all game sprites, if any
     while (draw_req_idx >= 0) {
-        DrawRequest* req = &s_draw_requests[draw_req_idx];
+        DrawRequest *req = &s_draw_requests[draw_req_idx];
         req->draw_func(req->context);
         draw_req_idx--;
     }
@@ -60,20 +60,20 @@ void draw_sorted_sprites(mkb::BOOL32 some_condition) {
 
 void sort_sprites(mkb::BOOL32 some_condition) {
     mkb::uint is_view_stage;
-    u8* sprite_status;
+    u8 *sprite_status;
     int node_pos;
     int sprite_idx;
-    mkb::SpriteListNode* g_sss;
-    mkb::SpriteListNode* pSVar3;
+    mkb::SpriteListNode *g_sss;
+    mkb::SpriteListNode *pSVar3;
 
     is_view_stage = mkb::events[mkb::EVENT_VIEW].status != 0;
     node_pos = 2;
-    mkb::depth_sorted_sprites[0].sprite = (mkb::Sprite*)0x0;
-    mkb::depth_sorted_sprites[0].next = (mkb::SpriteListNode*)0x0;
+    mkb::depth_sorted_sprites[0].sprite = (mkb::Sprite *)0x0;
+    mkb::depth_sorted_sprites[0].next = (mkb::SpriteListNode *)0x0;
     mkb::depth_sorted_sprites[0].prev = mkb::depth_sorted_sprites + 1;
-    mkb::depth_sorted_sprites[1].sprite = (mkb::Sprite*)0x0;
+    mkb::depth_sorted_sprites[1].sprite = (mkb::Sprite *)0x0;
     mkb::depth_sorted_sprites[1].next = mkb::depth_sorted_sprites;
-    mkb::depth_sorted_sprites[1].prev = (mkb::SpriteListNode*)0x0;
+    mkb::depth_sorted_sprites[1].prev = (mkb::SpriteListNode *)0x0;
     sprite_idx = 0;
     sprite_status = mkb::sprite_pool_info.status_list;
     do {
@@ -86,8 +86,8 @@ void sort_sprites(mkb::BOOL32 some_condition) {
                 if (some_condition == 0) {
                     if ((mkb::sprites[sprite_idx].g_flags1 & 0x40000) != 0) {
                     LAB_8024883c:
-                        if (mkb::sprites[sprite_idx].prev_sprite == (mkb::Sprite*)0x0) {
-                            while ((pSVar3->sprite != (mkb::Sprite*)0x0 &&
+                        if (mkb::sprites[sprite_idx].prev_sprite == (mkb::Sprite *)0x0) {
+                            while ((pSVar3->sprite != (mkb::Sprite *)0x0 &&
                                     (mkb::sprites[sprite_idx].depth <= pSVar3->sprite->depth))) {
                                 pSVar3 = pSVar3->prev;
                             }
@@ -109,7 +109,7 @@ void sort_sprites(mkb::BOOL32 some_condition) {
     } while (true);
 }
 
-int compare_sprite_requests(const DrawRequest* a, const DrawRequest* b) {
+int compare_sprite_requests(const DrawRequest *a, const DrawRequest *b) {
     if (a->depth < b->depth) return -1;
     if (a->depth > b->depth) return 1;
     return 0;
@@ -124,10 +124,11 @@ void sort_and_draw_sprites(mkb::BOOL32 some_condition) {
 }  // namespace
 
 void init() {
-    patch::write_branch_bl((void*)relutil::relocate_addr(0x80299ECC), (void*)sort_and_draw_sprites);
+    patch::write_branch_bl((void *)relutil::relocate_addr(0x80299ECC),
+                           (void *)sort_and_draw_sprites);
 }
 
-void texture(TextureRequest* req) {
+void texture(TextureRequest *req) {
     ASSERT(req->texobj != nullptr);
 
     // Compute vertex position transform
@@ -166,7 +167,7 @@ void texture(TextureRequest* req) {
     mkb::GXSetZMode_cached(mkb::GX_TRUE, mkb::GX_ALWAYS, mkb::GX_TRUE);
 
     // Send vertex data
-    auto write_vertex = [](Vec* pos, Vec2d* uv) {
+    auto write_vertex = [](Vec *pos, Vec2d *uv) {
         mkb::GXPosition3f32(pos->x, pos->y, pos->z);
         mkb::GXTexCoord2f32(uv->x, uv->y);
     };
@@ -185,7 +186,7 @@ void tick() {
     s_draw_requests.reset();
 }
 
-void enqueue_draw_request_internal(f32 depth, void* context, void* draw_func) {
+void enqueue_draw_request_internal(f32 depth, void *context, void *draw_func) {
     s_draw_requests.push(DrawRequest{
         .draw_func = (DrawFunc)draw_func,
         .context = context,

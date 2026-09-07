@@ -10,9 +10,9 @@ namespace gameconf {
 
 namespace {
 
-[[noreturn]] void unknown_key(sj_Reader* reader, sj_Value key) {
+[[noreturn]] void unknown_key(sj_Reader *reader, sj_Value key) {
     int line = 1;
-    for (char* p = reader->data; p != key.start; p++) {
+    for (char *p = reader->data; p != key.start; p++) {
         if (*p == '\n') {
             line++;
         }
@@ -22,24 +22,28 @@ namespace {
     ABORT_MSG("config.json @ line %d: unknown key: '%.*s'", line, length, key.start);
 }
 
-char* push_str(arena::Arena* arena, gameconf::Config* conf, sj_Value str) {
+char *push_str(arena::Arena *arena, gameconf::Config *conf, sj_Value str) {
     ASSERT(str.type == SJ_STRING);
     u32 size = str.end - str.start;
-    char* buf = (char*)arena->alloc_bytes(size + 1, 1);
+    char *buf = (char *)arena->alloc_bytes(size + 1, 1);
     mkb::memcpy(buf, str.start, size);
     return buf;
 }
 
-void parse_story_stage(arena::Arena* arena, sj_Reader* reader, sj_Value stage, u32 world_idx,
-                       u32 stage_idx, gameconf::Config* conf) {
+void parse_story_stage(arena::Arena *arena,
+                       sj_Reader *reader,
+                       sj_Value stage,
+                       u32 world_idx,
+                       u32 stage_idx,
+                       gameconf::Config *conf) {
     ASSERT(world_idx < gameconf::WORLD_COUNT);
     ASSERT(stage_idx < gameconf::WORLD_STAGE_COUNT);
 
-    gameconf::StoryStage* story_stage = &conf->story_stages[world_idx][stage_idx];
+    gameconf::StoryStage *story_stage = &conf->story_stages[world_idx][stage_idx];
 
     u16 theme_id = 0;
     u16 music_id = 0;
-    char* name = nullptr;
+    char *name = nullptr;
 
     sj_Value key = {};
     sj_Value value = {};
@@ -72,7 +76,7 @@ void parse_story_stage(arena::Arena* arena, sj_Reader* reader, sj_Value stage, u
     }
 }
 
-void parse_party_game_toggles(sj_Reader* reader, sj_Value toggles) {
+void parse_party_game_toggles(sj_Reader *reader, sj_Value toggles) {
     sj_Value key = {};
     sj_Value value = {};
     while (sj_iter_object(reader, toggles, &key, &value)) {
@@ -112,14 +116,14 @@ void parse_party_game_toggles(sj_Reader* reader, sj_Value toggles) {
     }
 }
 
-void parse_patches(sj_Reader* reader, sj_Value patches) {
+void parse_patches(sj_Reader *reader, sj_Value patches) {
     sj_Value key = {};
     sj_Value value = {};
     while (sj_iter_object(reader, patches, &key, &value)) {
         // Find matching patch
-        relpatches::Tickable* patch = nullptr;
+        relpatches::Tickable *patch = nullptr;
         for (u32 i = 0; i < relpatches::PATCH_COUNT; i++) {
-            relpatches::Tickable* curr_patch = &relpatches::patches[i];
+            relpatches::Tickable *curr_patch = &relpatches::patches[i];
             if (curr_patch->name != nullptr && json::eq(key, curr_patch->name)) {
                 patch = curr_patch;
             }
@@ -150,21 +154,21 @@ void parse_patches(sj_Reader* reader, sj_Value patches) {
 
 }  // namespace
 
-void load(arena::Arena* arena) {
+void load(arena::Arena *arena) {
     // Game heaps don't exist yet, so do temp allocations on mkb arena
-    void* orig_arena_lo = mkb::OSGetArenaLo();
+    void *orig_arena_lo = mkb::OSGetArenaLo();
     u32 config_json_size = 0;
     auto allocator = [](u32 size) {
         u32 rounded_up_size = mkb::OSRoundUp32B(size);
         return mkb::OSAllocFromArenaLo(rounded_up_size, 32);
     };
-    void* config_json = json::read_file(allocator, "config.json", &config_json_size);
+    void *config_json = json::read_file(allocator, "config.json", &config_json_size);
     if (config_json == nullptr) {
         ABORT_MSG("Failed to load config.json");
     }
 
-    gameconf::Config* parsed_conf = arena->alloc_struct<gameconf::Config>();
-    sj_Reader reader = sj_reader((char*)config_json, config_json_size);
+    gameconf::Config *parsed_conf = arena->alloc_struct<gameconf::Config>();
+    sj_Reader reader = sj_reader((char *)config_json, config_json_size);
     sj_Value root = sj_read(&reader);
     sj_Value root_child_key = {};
     sj_Value root_child_value = {};

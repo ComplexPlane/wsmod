@@ -7,4 +7,4 @@ namespace world_timer {
 void tick();
 u32 get();
 
-}
+}  // namespace world_timer

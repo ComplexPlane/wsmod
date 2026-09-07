@@ -46,55 +46,55 @@ inline float inv_lerp(float v, float a, float b) {
 
 /* Basic vec2 utilities */
 
-inline Vec2d vec2_add(const Vec2d& v1, const Vec2d& v2) {
+inline Vec2d vec2_add(const Vec2d &v1, const Vec2d &v2) {
     return Vec2d{v1.x + v2.x, v1.y + v2.y};
 }
 
-inline Vec2d vec2_sub(const Vec2d& v1, const Vec2d& v2) {
+inline Vec2d vec2_sub(const Vec2d &v1, const Vec2d &v2) {
     return Vec2d{v1.x - v2.x, v1.y - v2.y};
 }
 
-inline Vec2d vec2_scale(f32 scale, const Vec2d& v) {
+inline Vec2d vec2_scale(f32 scale, const Vec2d &v) {
     return Vec2d{scale * v.x, scale * v.y};
 }
 
-inline f32 vec2_dot(const Vec2d& v1, const Vec2d& v2) {
+inline f32 vec2_dot(const Vec2d &v1, const Vec2d &v2) {
     return v1.x * v2.x + v1.y * v2.y;
 }
 
-inline f32 vec2_dist_sq(const Vec2d& v1, const Vec2d& v2) {
+inline f32 vec2_dist_sq(const Vec2d &v1, const Vec2d &v2) {
     Vec2d delta = vec2_sub(v1, v2);
     return vec2_dot(delta, delta);
 }
 
-inline Vec2d vec2_lerp(f32 t, const Vec2d& v1, const Vec2d& v2) {
+inline Vec2d vec2_lerp(f32 t, const Vec2d &v1, const Vec2d &v2) {
     return vec2_add(vec2_scale(1.f - t, v1), vec2_scale(t, v2));
 }
 
 /* Basic vec3 utilities */
 
-inline Vec vec_add(const Vec& v1, const Vec& v2) {
+inline Vec vec_add(const Vec &v1, const Vec &v2) {
     return Vec{v1.x + v2.x, v1.y + v2.y, v1.z + v2.z};
 }
 
-inline Vec vec_sub(const Vec& v1, const Vec& v2) {
+inline Vec vec_sub(const Vec &v1, const Vec &v2) {
     return Vec{v1.x - v2.x, v1.y - v2.y, v1.z - v2.z};
 }
 
-inline Vec vec_scale(f32 scale, const Vec& v) {
+inline Vec vec_scale(f32 scale, const Vec &v) {
     return Vec{scale * v.x, scale * v.y, scale * v.z};
 }
 
-inline f32 vec_dot(const Vec& v1, const Vec& v2) {
+inline f32 vec_dot(const Vec &v1, const Vec &v2) {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
-inline f32 vec_dist_sq(const Vec& v1, const Vec& v2) {
+inline f32 vec_dist_sq(const Vec &v1, const Vec &v2) {
     Vec delta = vec_sub(v1, v2);
     return vec_dot(delta, delta);
 }
 
-inline Vec vec_lerp(f32 t, const Vec& v1, const Vec& v2) {
+inline Vec vec_lerp(f32 t, const Vec &v1, const Vec &v2) {
     return vec_add(vec_scale(1.f - t, v1), vec_scale(t, v2));
 }
 

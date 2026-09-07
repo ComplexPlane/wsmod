@@ -27,6 +27,6 @@ struct StageConf {
 };
 
 // Stageconf loaded after stagedef loads, freed when unloading stage
-extern StageConf* conf;
+extern StageConf *conf;
 
 }  // namespace custompack::stageconf

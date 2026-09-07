@@ -13,6 +13,6 @@ struct SemVer {
 extern const SemVer WSMOD_VERSION;
 extern const SemVer CUSTOMPACK_VERSION;
 
-s32 compare(const SemVer& v1, const SemVer& v2);
+s32 compare(const SemVer &v1, const SemVer &v2);
 
 }  // namespace version

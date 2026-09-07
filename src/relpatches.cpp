@@ -272,7 +272,7 @@ void remove_desert_haze::init_main_loop() {
 // the submode indicates we're currently on a stage, or if we're on the 'Retry' screen.
 void story_continuous_music::init_main_loop() {
     patch::write_branch_bl(relutil::relocate_addr(0x802a5c34),
-                           reinterpret_cast<void*>(main::story_mode_music_hook));
+                           reinterpret_cast<void *>(main::story_mode_music_hook));
     patch::write_nop(relutil::relocate_addr(0x80273aa0));
 }
 
@@ -348,9 +348,9 @@ void init_main_game() {
     patch::write_nop(relutil::relocate_addr(0x808fa4f4));
 
     patch::write_branch_bl(relutil::relocate_addr(0x808fa560),
-                           reinterpret_cast<void*>(update_death_count));
-    patch::write_branch(reinterpret_cast<void*>(mkb::sprite_monkey_counter_tick),
-                        reinterpret_cast<void*>(death_counter_sprite_tick));
+                           reinterpret_cast<void *>(update_death_count));
+    patch::write_branch(reinterpret_cast<void *>(mkb::sprite_monkey_counter_tick),
+                        reinterpret_cast<void *>(death_counter_sprite_tick));
 }
 
 // Increments the death counter of the current player on death.
@@ -360,7 +360,7 @@ void init_main_game() {
 // of lives of the player, which determines whether or not
 // the game should proceed to the continue/game over screen or not.
 u32 update_death_count() {
-    mkb::Ball* ball = mkb::balls;
+    mkb::Ball *ball = mkb::balls;
     for (int idx = 0; idx < 4; idx++) {
         if (ball->status == mkb::STAT_NORMAL) {
             death_count[idx]++;
@@ -373,7 +373,7 @@ u32 update_death_count() {
 // Assigns our own parameters to the life counter sprite for the purposes
 // of counting deaths. Green when no deaths have occured, scales the sprite
 // so numbers don't go off-screen or get obstructed.
-void death_counter_sprite_tick(u8* status, mkb::Sprite* sprite) {
+void death_counter_sprite_tick(u8 *status, mkb::Sprite *sprite) {
     u32 display = death_count[mkb::curr_player_idx];
 
     if (display == 0) {
@@ -411,41 +411,41 @@ void disable_tutorial::init_main_loop() {
 void fix_stobj_reflection::init_main_loop() {
     patch::write_word(relutil::relocate_addr(0x802ca480), PPC_INSTR_LI(PPC_R0, 0x0));
     patch::write_branch_bl(relutil::relocate_addr(0x802c9434),
-                           reinterpret_cast<void*>(main::reflection_draw_stage_hook));
+                           reinterpret_cast<void *>(main::reflection_draw_stage_hook));
 }
 
 // Checks the stage object's model flag to determine if the proper flag is set
 // during the 'view stage' sequence.
 void fix_stobj_reflection::init_main_game() {
     patch::write_branch_bl(relutil::relocate_addr(0x80913F34),
-                           reinterpret_cast<void*>(main::reflection_view_stage_hook));
+                           reinterpret_cast<void *>(main::reflection_view_stage_hook));
 }
 
 // Hooks into g_handle_world_bgm, modifies the variable for BGM ID to point to
 // the one in our stage ID ->
 void music_id_per_stage::init_main_loop() {
     patch::write_branch_bl(relutil::relocate_addr(0x802a5f08),
-                           reinterpret_cast<void*>(main::get_bgm_id_hook));
+                           reinterpret_cast<void *>(main::get_bgm_id_hook));
 }
 
 // Hooks into two functions that set the global world_theme variable
 // Not entirely sure what the second one is for, but it may be used for SMB1 themes
 void theme_id_per_stage::init_main_loop() {
     patch::write_branch(relutil::relocate_addr(0x802c7c3c),
-                        reinterpret_cast<void*>(main::get_theme_id_hook_1));
+                        reinterpret_cast<void *>(main::get_theme_id_hook_1));
     patch::write_branch(relutil::relocate_addr(0x802c7cc8),
-                        reinterpret_cast<void*>(main::get_theme_id_hook_2));
+                        reinterpret_cast<void *>(main::get_theme_id_hook_2));
 }
 
 namespace extend_reflections {
 float nearest_dist_to_mir, distance_to_mirror;
 Vec current_ball_position, mirror_origin, ig_init_pos, translation_factor;
-mkb::Itemgroup* active_ig;
+mkb::Itemgroup *active_ig;
 
 // Hooks into the reflection-handling function, calling our function instead
 void init_main_loop() {
     patch::write_branch_bl(relutil::relocate_addr(0x8034b270),
-                           reinterpret_cast<void*>(mirror_tick));
+                           reinterpret_cast<void *>(mirror_tick));
     patch::write_nop(relutil::relocate_addr(0x8034b11c));
     nearest_dist_to_mir = -1.0;
     distance_to_mirror = 0.0;
@@ -455,16 +455,16 @@ void init_main_loop() {
 // Translates the nearest mirror from its origin to the current translation/rotation of its
 // collision header
 void mirror_tick() {
-    mkb::Ball* ball = mkb::balls;
+    mkb::Ball *ball = mkb::balls;
 
     // Determines the nearest reflective surface to the active ball
     for (int idx = 0; idx < 4; idx++) {
         if (ball != nullptr && ball->status == mkb::STAT_NORMAL) {
             for (u32 col_hdr_idx = 0; col_hdr_idx < (mkb::stagedef->coli_header_count);
                  col_hdr_idx++) {
-                mkb::StagedefColiHeader* hdr = &mkb::stagedef->coli_header_list[col_hdr_idx];
+                mkb::StagedefColiHeader *hdr = &mkb::stagedef->coli_header_list[col_hdr_idx];
                 for (u32 refl_idx = 0; refl_idx < hdr->reflective_stage_model_count; refl_idx++) {
-                    mkb::StagedefReflectiveStageModel* refl =
+                    mkb::StagedefReflectiveStageModel *refl =
                         &hdr->reflective_stage_model_list[refl_idx];
                     current_ball_position = ball->pos;
                     distance_to_mirror = get_distance(
@@ -499,7 +499,7 @@ void mirror_tick() {
     nearest_dist_to_mir = -1.0;
 }
 
-float get_distance(Vec& vec1, Vec& vec2) {
+float get_distance(Vec &vec1, Vec &vec2) {
     float xcmp = (vec1.x - vec2.x) * (vec1.x - vec2.x);
     float ycmp = (vec1.y - vec2.y) * (vec1.y - vec2.y);
     float zcmp = (vec1.z - vec2.z) * (vec1.z - vec2.z);
@@ -512,17 +512,17 @@ namespace story_mode_char_select {
 
 namespace {
 
-mkb::undefined4* AIAI[] = {&mkb::CHAR_A, &mkb::CHAR_I,     &mkb::CHAR_A,
+mkb::undefined4 *AIAI[] = {&mkb::CHAR_A, &mkb::CHAR_I,     &mkb::CHAR_A,
                            &mkb::CHAR_I, &mkb::CHAR_SPACE, &mkb::CHAR_SPACE};
-mkb::undefined4* MEEMEE[] = {&mkb::CHAR_M, &mkb::CHAR_E, &mkb::CHAR_E,
+mkb::undefined4 *MEEMEE[] = {&mkb::CHAR_M, &mkb::CHAR_E, &mkb::CHAR_E,
                              &mkb::CHAR_M, &mkb::CHAR_E, &mkb::CHAR_E};
-mkb::undefined4* BABY[] = {&mkb::CHAR_B, &mkb::CHAR_A,     &mkb::CHAR_B,
+mkb::undefined4 *BABY[] = {&mkb::CHAR_B, &mkb::CHAR_A,     &mkb::CHAR_B,
                            &mkb::CHAR_Y, &mkb::CHAR_SPACE, &mkb::CHAR_SPACE};
-mkb::undefined4* GONGON[] = {&mkb::CHAR_G, &mkb::CHAR_O, &mkb::CHAR_N,
+mkb::undefined4 *GONGON[] = {&mkb::CHAR_G, &mkb::CHAR_O, &mkb::CHAR_N,
                              &mkb::CHAR_G, &mkb::CHAR_O, &mkb::CHAR_N};
-mkb::undefined4* HIHI[] = {&mkb::CHAR_H, &mkb::CHAR_I,     &mkb::CHAR_H,
+mkb::undefined4 *HIHI[] = {&mkb::CHAR_H, &mkb::CHAR_I,     &mkb::CHAR_H,
                            &mkb::CHAR_I, &mkb::CHAR_SPACE, &mkb::CHAR_SPACE};
-mkb::undefined4** monkey_name_lookup[] = {AIAI, MEEMEE, BABY, GONGON, HIHI};
+mkb::undefined4 **monkey_name_lookup[] = {AIAI, MEEMEE, BABY, GONGON, HIHI};
 
 }  // namespace
 
@@ -530,14 +530,14 @@ mkb::undefined4** monkey_name_lookup[] = {AIAI, MEEMEE, BABY, GONGON, HIHI};
 // preloaded in place of AiAi
 void init_main_loop() {
     patch::write_branch_bl(relutil::relocate_addr(0x803daffc),
-                           reinterpret_cast<void*>(main::get_monkey_id_hook));
+                           reinterpret_cast<void *>(main::get_monkey_id_hook));
 }
 
 // Sets the storymode filename to the name of the selected monkey, when no name is provided.
 void set_nameentry_filename() {
     for (int i = 0; i < 6; i++) {
         mkb::story_file_name[i] =
-            reinterpret_cast<char*>(monkey_name_lookup[mkb::active_monkey_id[0]][i]);
+            reinterpret_cast<char *>(monkey_name_lookup[mkb::active_monkey_id[0]][i]);
     }
     mkb::g_some_nameentry_length = 0x6;
 }
@@ -548,14 +548,14 @@ void set_nameentry_filename() {
 // monkey, rather than deafulting to 'AIAI'.
 void init_main_game() {
     patch::write_branch_bl(relutil::relocate_addr(0x808fcac4),
-                           reinterpret_cast<void*>(main::get_monkey_id_hook));
+                           reinterpret_cast<void *>(main::get_monkey_id_hook));
     patch::write_branch_bl(relutil::relocate_addr(0x808ff120),
-                           reinterpret_cast<void*>(main::get_monkey_id_hook));
+                           reinterpret_cast<void *>(main::get_monkey_id_hook));
     patch::write_branch_bl(relutil::relocate_addr(0x80908894),
-                           reinterpret_cast<void*>(main::get_monkey_id_hook));
+                           reinterpret_cast<void *>(main::get_monkey_id_hook));
 
     patch::write_branch_bl(relutil::relocate_addr(0x80906368),
-                           reinterpret_cast<void*>(set_nameentry_filename));
+                           reinterpret_cast<void *>(set_nameentry_filename));
     patch::write_nop(relutil::relocate_addr(0x8090636c));
     patch::write_nop(relutil::relocate_addr(0x80906370));
     patch::write_nop(relutil::relocate_addr(0x80906374));
@@ -635,7 +635,7 @@ char CHAR_w[4] = {'w', '\0', '\0', '\0'};
 }  // namespace
 
 void init_main_game() {
-    mkb::nameentry_character_ptr_list[114] = reinterpret_cast<mkb::undefined4**>(&(CHAR_w[0]));
+    mkb::nameentry_character_ptr_list[114] = reinterpret_cast<mkb::undefined4 **>(&(CHAR_w[0]));
 }
 }  // namespace fix_missing_w
 
@@ -729,7 +729,7 @@ void dmd_scen_sel_floor_init_patch() {
     mkb::scen_info.mode = mkb::DMD_SCEN_SEL_FLOOR_MAIN;
 
     // I have no idea what this does, it's something the game does in the original function
-    u32 data = *reinterpret_cast<u32*>(relutil::relocate_addr(0x8054dbc0));
+    u32 data = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x8054dbc0));
     patch::write_word(relutil::relocate_addr(0x8054dbc0), data | 2);
     mkb::dmd_scen_sel_floor_init_child();
 }
@@ -746,14 +746,14 @@ void handle_preloading() {
 }
 
 void init_main_game() {
-    patch::write_branch(reinterpret_cast<void*>(mkb::dmd_scen_newgame_main),
-                        reinterpret_cast<void*>(dmd_scen_newgame_main_patch));
-    patch::write_branch(reinterpret_cast<void*>(mkb::dmd_scen_sceneplay_init),
-                        reinterpret_cast<void*>(dmd_scen_sceneplay_init_patch));
-    patch::write_branch(reinterpret_cast<void*>(mkb::dmd_scen_sel_floor_init),
-                        reinterpret_cast<void*>(dmd_scen_sel_floor_init_patch));
-    patch::write_branch(reinterpret_cast<void*>(mkb::g_preload_next_stage_files),
-                        reinterpret_cast<void*>(handle_preloading));
+    patch::write_branch(reinterpret_cast<void *>(mkb::dmd_scen_newgame_main),
+                        reinterpret_cast<void *>(dmd_scen_newgame_main_patch));
+    patch::write_branch(reinterpret_cast<void *>(mkb::dmd_scen_sceneplay_init),
+                        reinterpret_cast<void *>(dmd_scen_sceneplay_init_patch));
+    patch::write_branch(reinterpret_cast<void *>(mkb::dmd_scen_sel_floor_init),
+                        reinterpret_cast<void *>(dmd_scen_sel_floor_init_patch));
+    patch::write_branch(reinterpret_cast<void *>(mkb::g_preload_next_stage_files),
+                        reinterpret_cast<void *>(handle_preloading));
 }
 
 }  // namespace skip_cutscenes
@@ -780,8 +780,8 @@ void tick() {
 // theme.
 namespace fix_storm_continue_platform {
 void init_main_loop() {
-    patch::write_branch(reinterpret_cast<void*>(mkb::effect_bgstm_rainripple_disp),
-                        reinterpret_cast<void*>(main::fix_rain_ripple));
+    patch::write_branch(reinterpret_cast<void *>(mkb::effect_bgstm_rainripple_disp),
+                        reinterpret_cast<void *>(main::fix_rain_ripple));
 }
 }  // namespace fix_storm_continue_platform
 
@@ -790,14 +790,19 @@ void init_main_loop() {
 namespace fix_any_percent_crash {
 namespace {
 bool chara_heap_cleared;
-mkb::SpriteTex* texes[10] = {};
+mkb::SpriteTex *texes[10] = {};
 u8 active_sprite_idx = 0.;
 }  // namespace
 
 // Keeps track all preview image sprite pointers as they are loaded. Only 10 are loaded for story
 // mode.
-TRAMP(tex_load_tramp, mkb::g_load_preview_texture,
-      [](mkb::SpriteTex* sprite_tex, char* file_path, u32 param_3, u16 width, u16 height,
+TRAMP(tex_load_tramp,
+      mkb::g_load_preview_texture,
+      [](mkb::SpriteTex *sprite_tex,
+         char *file_path,
+         u32 param_3,
+         u16 width,
+         u16 height,
          u32 format) {
           if (mkb::main_mode == mkb::MD_GAME || mkb::main_game_mode == mkb::STORY_MODE) {
               if (active_sprite_idx > 9) {
@@ -974,7 +979,7 @@ void init_main_loop() {
     for (u32 addr : lbz_addrs_lo) {
         u32 ram_addr = addr + 0x80240000 - 0x80199fa0 + 0x802701d8;
         // Nop `extsb` instr following lbz to prevent sign extension
-        patch::write_nop(reinterpret_cast<void*>(ram_addr + 4));
+        patch::write_nop(reinterpret_cast<void *>(ram_addr + 4));
     }
 }
 }  // namespace stobj_draw_fix
@@ -993,13 +998,14 @@ constexpr u32 COLI_FLAG_IG = 1 << 7;
 
 mkb::PhysicsBall s_clean_physicsball;
 
-bool vec_equal_exact(const Vec& vec1, const Vec& vec2) {
+bool vec_equal_exact(const Vec &vec1, const Vec &vec2) {
     return vec1.x == vec2.x && vec1.y == vec2.y && vec1.z == vec2.z;
 }
 
 // Marks our collision flag if the ball's position/velocity changed during collision
-void mark_coli_flag_if_transformed(const Vec& prev_pos, const Vec& prev_vel,
-                                   mkb::PhysicsBall* physicsball) {
+void mark_coli_flag_if_transformed(const Vec &prev_pos,
+                                   const Vec &prev_vel,
+                                   mkb::PhysicsBall *physicsball) {
     if (!vec_equal_exact(prev_pos, physicsball->pos) ||
         !vec_equal_exact(prev_vel, physicsball->vel)) {
         physicsball->flags |= COLI_FLAG_IG;
@@ -1008,14 +1014,16 @@ void mark_coli_flag_if_transformed(const Vec& prev_pos, const Vec& prev_vel,
 
 }  // namespace
 
-TRAMP(s_init_physicsball_tramp, mkb::init_physicsball_from_ball,
-      [](mkb::Ball* ball, mkb::PhysicsBall* physicsball) {
+TRAMP(s_init_physicsball_tramp,
+      mkb::init_physicsball_from_ball,
+      [](mkb::Ball *ball, mkb::PhysicsBall *physicsball) {
           s_init_physicsball_tramp.chain(ball, physicsball);
           s_clean_physicsball = *physicsball;
       });
 
-TRAMP(s_tf_physball_tramp, mkb::tf_physball_to_itemgroup_space,
-      [](mkb::PhysicsBall* physicsball, int dest_ig_idx) {
+TRAMP(s_tf_physball_tramp,
+      mkb::tf_physball_to_itemgroup_space,
+      [](mkb::PhysicsBall *physicsball, int dest_ig_idx) {
           if (physicsball->flags & COLI_FLAG_IG) {
               physicsball->flags &= ~COLI_FLAG_IG;
               s_clean_physicsball = *physicsball;
@@ -1026,8 +1034,9 @@ TRAMP(s_tf_physball_tramp, mkb::tf_physball_to_itemgroup_space,
       });
 
 // Stage collision plane collision
-TRAMP(s_collide_physicsball_tramp, mkb::collide_ball_with_plane,
-      [](mkb::PhysicsBall* physicsball, mkb::ColiPlane* plane) {
+TRAMP(s_collide_physicsball_tramp,
+      mkb::collide_ball_with_plane,
+      [](mkb::PhysicsBall *physicsball, mkb::ColiPlane *plane) {
           Vec prev_pos = physicsball->pos;
           Vec prev_vel = physicsball->vel;
           s_collide_physicsball_tramp.chain(physicsball, plane);
@@ -1035,8 +1044,9 @@ TRAMP(s_collide_physicsball_tramp, mkb::collide_ball_with_plane,
       });
 
 // Bumper collision
-TRAMP(s_stobj_bumper_coli_tramp, mkb::stobj_bumper_coli,
-      [](mkb::Stobj* stobj, mkb::PhysicsBall* physicsball) {
+TRAMP(s_stobj_bumper_coli_tramp,
+      mkb::stobj_bumper_coli,
+      [](mkb::Stobj *stobj, mkb::PhysicsBall *physicsball) {
           Vec prev_pos = physicsball->pos;
           Vec prev_vel = physicsball->vel;
           s_stobj_bumper_coli_tramp.chain(stobj, physicsball);
@@ -1044,8 +1054,9 @@ TRAMP(s_stobj_bumper_coli_tramp, mkb::stobj_bumper_coli,
       });
 
 // Party Ball collision
-TRAMP(s_stobj_goalbag_coli_tramp, mkb::stobj_goalbag_coli,
-      [](mkb::Stobj* stobj, mkb::PhysicsBall* physicsball) {
+TRAMP(s_stobj_goalbag_coli_tramp,
+      mkb::stobj_goalbag_coli,
+      [](mkb::Stobj *stobj, mkb::PhysicsBall *physicsball) {
           Vec prev_pos = physicsball->pos;
           Vec prev_vel = physicsball->vel;
           s_stobj_goalbag_coli_tramp.chain(stobj, physicsball);
@@ -1053,8 +1064,9 @@ TRAMP(s_stobj_goalbag_coli_tramp, mkb::stobj_goalbag_coli,
       });
 
 // Goal tape resistance
-TRAMP(s_stobj_goaltape_coli_tramp, mkb::stobj_goaltape_coli,
-      [](mkb::Stobj* stobj, mkb::PhysicsBall* physicsball) {
+TRAMP(s_stobj_goaltape_coli_tramp,
+      mkb::stobj_goaltape_coli,
+      [](mkb::Stobj *stobj, mkb::PhysicsBall *physicsball) {
           Vec prev_pos = physicsball->pos;
           Vec prev_vel = physicsball->vel;
           s_stobj_goaltape_coli_tramp.chain(stobj, physicsball);
@@ -1062,8 +1074,9 @@ TRAMP(s_stobj_goaltape_coli_tramp, mkb::stobj_goaltape_coli,
       });
 
 // Wormhole surface resistance
-TRAMP(s_stobj_returngate_coli_tramp, mkb::stobj_returngate_coli,
-      [](mkb::Stobj* stobj, mkb::PhysicsBall* physicsball) {
+TRAMP(s_stobj_returngate_coli_tramp,
+      mkb::stobj_returngate_coli,
+      [](mkb::Stobj *stobj, mkb::PhysicsBall *physicsball) {
           Vec prev_pos = physicsball->pos;
           Vec prev_vel = physicsball->vel;
           s_stobj_returngate_coli_tramp.chain(stobj, physicsball);

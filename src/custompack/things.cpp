@@ -18,7 +18,7 @@ enum ThingFlags {
 };
 
 struct ThingInst {
-    custompack::stageconf::Thing* conf;
+    custompack::stageconf::Thing *conf;
     u8 flags;
     u16 itemgroup_idx;
 };
@@ -27,12 +27,12 @@ struct ShadowReq {
     Vec pos;
     S16Vec rot;
     Vec scale;
-    mkb::GmaModel* model;
+    mkb::GmaModel *model;
     f32 alpha;
 };
 
 cnt::Array<ThingInst> s_things;
-mkb::GmaModel* s_thing_model = nullptr;
+mkb::GmaModel *s_thing_model = nullptr;
 
 Vec pos_world_from_ig(Vec pos, u32 itemgroup_idx) {
     mkb::mtxa_push();
@@ -57,7 +57,7 @@ f32 get_camera_distance(Vec pos_rt_world) {
     return -pos_rt_view.z;
 }
 
-void draw_shadow_req(ShadowReq* shadow) {
+void draw_shadow_req(ShadowReq *shadow) {
     mkb::avdisp_set_z_mode(mkb::GX_TRUE, mkb::GX_LEQUAL, mkb::GX_FALSE);
 
     mkb::mtxa_from_mtxb_translate(&shadow->pos);
@@ -74,7 +74,7 @@ void draw_shadow_req(ShadowReq* shadow) {
     mkb::avdisp_set_z_mode(mkb::GX_TRUE, mkb::GX_LEQUAL, mkb::GX_TRUE);
 }
 
-void draw_thing_shadow(ThingInst* thing, f32 thing_alpha) {
+void draw_thing_shadow(ThingInst *thing, f32 thing_alpha) {
     f32 scale = slider::get("shadow scale", 0.55, 0.05);
     f32 base_alpha = slider::get("shadow alpha", 0.40, 0.05);
     f32 min_shadow_dist = slider::get("min sdw dist", 50);
@@ -101,7 +101,7 @@ void draw_thing_shadow(ThingInst* thing, f32 thing_alpha) {
     }
 }
 
-void draw_base(ThingInst* thing, s16 rot, f32 alpha) {
+void draw_base(ThingInst *thing, s16 rot, f32 alpha) {
     mkb::mtxa_from_mtxb();
     if (thing->itemgroup_idx > 0) {
         mkb::mtxa_mult_right(&mkb::itemgroups[thing->itemgroup_idx].transform);
@@ -117,7 +117,7 @@ void draw_base(ThingInst* thing, s16 rot, f32 alpha) {
     mkb::avdisp_draw_model_culled_sort_auto(s_thing_model);
 }
 
-void draw_thing(ThingInst* thing, s16 rot) {
+void draw_thing(ThingInst *thing, s16 rot) {
     constexpr f32 ALPHA = 1.f;
     draw_base(thing, rot, ALPHA);
     draw_thing_shadow(thing, ALPHA);
@@ -129,7 +129,7 @@ void collide_things() {
         // things that _should_ activate. This is O(n^2) if many things are contacted at
         // the same time but otherwise OK
 
-        ThingInst* thing = &s_things[i];
+        ThingInst *thing = &s_things[i];
 
         Vec thing_pos = thing->conf->pos;
         if (thing->itemgroup_idx > 0) {
@@ -137,7 +137,7 @@ void collide_things() {
             mkb::mtxa_tf_point(&thing_pos, &thing_pos);
         }
 
-        mkb::Ball* ball = &mkb::balls[mkb::curr_player_idx];
+        mkb::Ball *ball = &mkb::balls[mkb::curr_player_idx];
         f32 dist_sq = vec_dist_sq(ball->pos, thing_pos);
         f32 radii_sum = ball->physical_ball_radius + HITBOX_RADIUS;
 
@@ -164,19 +164,19 @@ void stobj_init() {
     // Preallocate Things vector
     u32 thing_count = 0;
     for (u32 ig_idx = 0; ig_idx < stageconf::conf->itemgroups.count(); ig_idx++) {
-        stageconf::ItemGroup* ig_conf = &stageconf::conf->itemgroups[ig_idx];
+        stageconf::ItemGroup *ig_conf = &stageconf::conf->itemgroups[ig_idx];
         thing_count += ig_conf->things.count();
     }
 
     // Populate Things vector
     cnt::Vector<ThingInst> things(&mem::gameplay_arena, thing_count);
     for (u32 ig_idx = 0; ig_idx < stageconf::conf->itemgroups.count(); ig_idx++) {
-        stageconf::ItemGroup* ig_conf = &stageconf::conf->itemgroups[ig_idx];
+        stageconf::ItemGroup *ig_conf = &stageconf::conf->itemgroups[ig_idx];
 
         for (u32 i = 0; i < ig_conf->things.count(); i++) {
-            stageconf::Thing* thing_conf = &ig_conf->things[i];
+            stageconf::Thing *thing_conf = &ig_conf->things[i];
 
-            ThingInst* thing = things.push_zeroed();
+            ThingInst *thing = things.push_zeroed();
             thing->conf = thing_conf;
             thing->itemgroup_idx = ig_idx;
         }

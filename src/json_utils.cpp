@@ -4,10 +4,10 @@
 
 namespace json {
 
-bool eq(sj_Value value, const char* s) {
+bool eq(sj_Value value, const char *s) {
     size_t len = value.end - value.start;
-    return mkb::strlen(const_cast<char*>(s)) == len &&
-           mkb::memcmp(value.start, const_cast<char*>(s), len) == 0;
+    return mkb::strlen(const_cast<char *>(s)) == len &&
+           mkb::memcmp(value.start, const_cast<char *>(s), len) == 0;
 }
 
 u32 parse_array_len(sj_Reader reader, sj_Value array) {
@@ -33,7 +33,7 @@ bool parse_bool(sj_Value value) {
     return eq(value, "true");
 }
 
-Vec parse_vec(sj_Reader* reader, sj_Value array) {
+Vec parse_vec(sj_Reader *reader, sj_Value array) {
     Vec v = {};
     sj_Value elem = {};
 
@@ -47,12 +47,12 @@ Vec parse_vec(sj_Reader* reader, sj_Value array) {
     return v;
 }
 
-S16Vec parse_rot(sj_Reader* reader, sj_Value array) {
+S16Vec parse_rot(sj_Reader *reader, sj_Value array) {
     Vec v = parse_vec(reader, array);
     return {mathutils::deg_to_s16(v.x), mathutils::deg_to_s16(v.y), mathutils::deg_to_s16(v.z)};
 }
 
-u32 parse_enum(sj_Value s, const char** options, u32 option_count) {
+u32 parse_enum(sj_Value s, const char **options, u32 option_count) {
     for (u32 i = 0; i < option_count; i++) {
         if (eq(s, options[i])) {
             return i;

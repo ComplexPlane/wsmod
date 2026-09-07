@@ -18,9 +18,9 @@ enum class WriteState {
 
 struct WriteRequest {
     // Params
-    const char* file_name;
+    const char *file_name;
     Slot slot;
-    const void* buf;
+    const void *buf;
     u32 buf_size;
     void (*callback)(mkb::CARDResult);
 
@@ -30,7 +30,7 @@ struct WriteRequest {
     u32 write_size;  // Multiples of card sector size
 };
 
-u8* s_card_work_area;
+u8 *s_card_work_area;
 WriteRequest s_curr_write;  // Current params
 WriteRequest s_next_write;  // Params for use for next write
 bool s_write_requested;
@@ -41,8 +41,10 @@ bool s_write_requested;
  * doing memcard operations!
  */
 
-mkb::CARDResult read_file_internal(arena::Arena* arena, const char* file_name, Slot slot,
-                                   void** out_buf) {
+mkb::CARDResult read_file_internal(arena::Arena *arena,
+                                   const char *file_name,
+                                   Slot slot,
+                                   void **out_buf) {
     mkb::CARDResult res = mkb::CARD_RESULT_READY;
     s32 chan = static_cast<s32>(slot);
     mkb::CARDFileInfo card_file_info = {};
@@ -58,7 +60,7 @@ mkb::CARDResult read_file_internal(arena::Arena* arena, const char* file_name, S
     }
 
     // Open file
-    res = mkb::CARDOpen(chan, const_cast<char*>(file_name), &card_file_info);
+    res = mkb::CARDOpen(chan, const_cast<char *>(file_name), &card_file_info);
     if (res != mkb::CARD_RESULT_READY) {
         mkb::CARDUnmount(chan);
         return res;
@@ -74,7 +76,7 @@ mkb::CARDResult read_file_internal(arena::Arena* arena, const char* file_name, S
 
     u32 orig_arena_occupied = arena->get_occupied();
     u32 buf_size = (stat.length + mkb::CARD_READ_SIZE - 1) & ~(mkb::CARD_READ_SIZE - 1);
-    void* buf = arena->alloc_bytes(buf_size, 32);
+    void *buf = arena->alloc_bytes(buf_size, 32);
     if (buf == nullptr) {
         // Not quite the right error (we're out of memory, not out of card space)
         mkb::CARDUnmount(chan);
@@ -127,7 +129,7 @@ void tick_write() {
             if (res != mkb::CARD_RESULT_BUSY) {
                 if (res == mkb::CARD_RESULT_READY) {
                     // Try to open the file
-                    res = mkb::CARDOpen(chan, const_cast<char*>(s_curr_write.file_name),
+                    res = mkb::CARDOpen(chan, const_cast<char *>(s_curr_write.file_name),
                                         &s_curr_write.card_file_info);
                     if (res == mkb::CARD_RESULT_READY) {
                         // Check if file is too small
@@ -145,14 +147,14 @@ void tick_write() {
                         } else {
                             // Card opened successfully, proceed directly to writing
                             mkb::CARDWriteAsync(&s_curr_write.card_file_info,
-                                                const_cast<void*>(s_curr_write.buf),
+                                                const_cast<void *>(s_curr_write.buf),
                                                 s_curr_write.write_size, 0, nullptr);
                             s_curr_write.state = WriteState::Write;
                         }
 
                     } else if (res == mkb::CARD_RESULT_NOFILE) {
                         // Create new file
-                        mkb::CARDCreateAsync(chan, const_cast<char*>(s_curr_write.file_name),
+                        mkb::CARDCreateAsync(chan, const_cast<char *>(s_curr_write.file_name),
                                              s_curr_write.write_size, &s_curr_write.card_file_info,
                                              nullptr);
                         s_curr_write.state = WriteState::Create;
@@ -175,7 +177,7 @@ void tick_write() {
             if (res != mkb::CARD_RESULT_BUSY) {
                 if (res == mkb::CARD_RESULT_READY) {
                     mkb::CARDWriteAsync(&s_curr_write.card_file_info,
-                                        const_cast<void*>(s_curr_write.buf),
+                                        const_cast<void *>(s_curr_write.buf),
                                         s_curr_write.write_size, 0, nullptr);
                     s_curr_write.state = WriteState::Write;
                 } else {
@@ -189,7 +191,7 @@ void tick_write() {
             mkb::CARDResult res = mkb::CARDGetResultCode(chan);
             if (res != mkb::CARD_RESULT_BUSY) {
                 if (res == mkb::CARD_RESULT_READY) {
-                    mkb::CARDCreateAsync(chan, const_cast<char*>(s_curr_write.file_name),
+                    mkb::CARDCreateAsync(chan, const_cast<char *>(s_curr_write.file_name),
                                          s_curr_write.write_size, &s_curr_write.card_file_info,
                                          nullptr);
                     s_curr_write.state = WriteState::Create;
@@ -213,11 +215,14 @@ void tick_write() {
 
 }  // namespace
 
-mkb::CARDResult read_file(arena::Arena* arena, const char* file_name, Slot slot, void** out_buf) {
+mkb::CARDResult read_file(arena::Arena *arena, const char *file_name, Slot slot, void **out_buf) {
     return read_file_internal(arena, file_name, slot, out_buf);
 }
 
-void write_file(const char* file_name, Slot slot, const void* buf, u32 buf_size,
+void write_file(const char *file_name,
+                Slot slot,
+                const void *buf,
+                u32 buf_size,
                 void (*callback)(mkb::CARDResult)) {
     s_next_write = {
         .file_name = file_name,
@@ -229,8 +234,8 @@ void write_file(const char* file_name, Slot slot, const void* buf, u32 buf_size,
     s_write_requested = true;
 }
 
-void init(arena::Arena* arena) {
-    s_card_work_area = (u8*)arena->alloc_bytes(mkb::CARD_WORKAREA_SIZE, 32);
+void init(arena::Arena *arena) {
+    s_card_work_area = (u8 *)arena->alloc_bytes(mkb::CARD_WORKAREA_SIZE, 32);
     modlink::set_card_work_area(s_card_work_area);
 }
 

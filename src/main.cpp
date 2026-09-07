@@ -22,7 +22,7 @@ const version::SemVer CUSTOMPACK_VERSION = {1, 0, 0};
 void do_assembly_patches() {
     // Inject the run function at the start of the main game loop
     patch::write_branch_bl(relutil::relocate_addr(0x80270700),
-                           reinterpret_cast<void*>(start_main_loop_assembly));
+                           reinterpret_cast<void *>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
@@ -35,7 +35,7 @@ void do_assembly_patches() {
 }
 
 typedef void (*TickableFunc)();
-typedef TickableFunc (*TickableFuncFunc)(const relpatches::Tickable& tickable);
+typedef TickableFunc (*TickableFuncFunc)(const relpatches::Tickable &tickable);
 
 // Run a specific Tickable function callback when appropriate
 void run_tickable_func(TickableFuncFunc tickable_func_func) {
@@ -72,7 +72,7 @@ void on_did_load_stagedef_hook(u32 stage_id) {
 
         // Allocate gameplay arena from remaining space in stage arena (after stageconf)
         u32 size = 0;
-        void* start = mem::stage_arena.alloc_remaining_bytes(32, &size);
+        void *start = mem::stage_arena.alloc_remaining_bytes(32, &size);
         mem::gameplay_arena.init("gameplay", start, size);
     }
 }
@@ -88,14 +88,14 @@ TRAMP(s_process_inputs_tramp, mkb::process_inputs, []() {
     run_tickable_func([](auto tickable) { return tickable.tick_func; });
 });
 
-TRAMP(s_OSLink_tramp, mkb::OSLink, [](mkb::OSModuleHeader* rel_buffer, void* bss_buffer) {
+TRAMP(s_OSLink_tramp, mkb::OSLink, [](mkb::OSModuleHeader *rel_buffer, void *bss_buffer) {
     bool ret = s_OSLink_tramp.chain(rel_buffer, bss_buffer);
 
     // Main game init functions
     if (rel_buffer->info.id == relutil::ModuleId::MainGame) {
         // Call just before depth-sorted view stage draw calls are drawn
         patch::write_branch_bl(relutil::relocate_addr(0x80913598),
-                               reinterpret_cast<void*>(view_stage_draw_hook));
+                               reinterpret_cast<void *>(view_stage_draw_hook));
 
         run_tickable_func([](auto tickable) { return tickable.main_game_init_func; });
     }
@@ -142,19 +142,19 @@ void hook_c_patches() {
     HOOK_TRAMP(s_preanim_tramp);
 
     patch::write_branch_bl(relutil::relocate_addr(0x80317d94),
-                           reinterpret_cast<void*>(stobj_tick_hook));
-    patch::write_branch_bl(reinterpret_cast<void*>(relutil::relocate_addr(0x802c734c)),
-                           reinterpret_cast<void*>(on_did_load_stagedef_hook));
+                           reinterpret_cast<void *>(stobj_tick_hook));
+    patch::write_branch_bl(reinterpret_cast<void *>(relutil::relocate_addr(0x802c734c)),
+                           reinterpret_cast<void *>(on_did_load_stagedef_hook));
 }
 
-void savestate(void* context, u32 flags, modlink::SaveRegionFunc region_func) {
+void savestate(void *context, u32 flags, modlink::SaveRegionFunc region_func) {
     region_func(context, mem::gameplay_arena.get_start(), mem::gameplay_arena.get_occupied(), 0);
 }
 
 }  // namespace
 
 void init() {
-    mkb::OSReport((char*)"[wsmod] CustomPack v%d.%d.%d loaded\n", CUSTOMPACK_VERSION.major,
+    mkb::OSReport((char *)"[wsmod] CustomPack v%d.%d.%d loaded\n", CUSTOMPACK_VERSION.major,
                   CUSTOMPACK_VERSION.minor, CUSTOMPACK_VERSION.patch);
 
     do_assembly_patches();

@@ -2,6 +2,6 @@
 
 namespace gameconf {
 
-gameconf::Config* conf;
+gameconf::Config *conf;
 
 }

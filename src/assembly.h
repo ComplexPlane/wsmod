@@ -45,7 +45,7 @@ void get_monkey_id_hook();
 extern mkb::SubMode sub_mode;
 void fix_rain_ripple();
 
-void texscroll_hook_asm(mkb::StagedefTextureScroll*);
+void texscroll_hook_asm(mkb::StagedefTextureScroll *);
 }
 
 }  // namespace main

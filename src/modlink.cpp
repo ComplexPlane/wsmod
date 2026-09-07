@@ -17,7 +17,7 @@ ModLinkPart2 s_part2 = {};
 }  // namespace
 
 void init() {
-    ModLink* link = reinterpret_cast<ModLink*>(MODLINK_ADDR);
+    ModLink *link = reinterpret_cast<ModLink *>(MODLINK_ADDR);
     link->magic = MAGIC;
     link->modlink_version = MODLINK_VERSION;
     link->wsmod_version = version::WSMOD_VERSION;
@@ -26,7 +26,7 @@ void init() {
     link->part2 = &s_part2;
 }
 
-void set_card_work_area(void* buf) {
+void set_card_work_area(void *buf) {
     s_part2.card_work_area = buf;
 }
 

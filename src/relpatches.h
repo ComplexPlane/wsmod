@@ -8,7 +8,7 @@ static constexpr u16 STAGE_COUNT = 421;
 extern u16 WORLD_COUNT;
 
 struct Tickable {
-    const char* name = nullptr;  // Name of the patch, what the config parser checks for
+    const char *name = nullptr;  // Name of the patch, what the config parser checks for
     int status = false;  // The status/value of the patch, generally whether or not it is enabled
     int default_value = false;  // The default status/value of the patch, to determine whether or
                                 // not the patch should be run if the passed status value differs
@@ -88,7 +88,7 @@ void init_main_loop();
 namespace challenge_death_count {
 void init_main_game();
 u32 update_death_count();
-void death_counter_sprite_tick(u8* status, mkb::Sprite* sprite);
+void death_counter_sprite_tick(u8 *status, mkb::Sprite *sprite);
 
 }  // namespace challenge_death_count
 
@@ -106,7 +106,7 @@ void init_main_game();
 namespace extend_reflections {
 void init_main_loop();
 void mirror_tick();
-float get_distance(Vec& vec1, Vec& vec2);
+float get_distance(Vec &vec1, Vec &vec2);
 
 }  // namespace extend_reflections
 
